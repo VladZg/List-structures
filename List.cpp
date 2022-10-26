@@ -6,6 +6,7 @@
 #include "List.h"
 
 //DSL
+#define index rand()
 #define DATA      list->data
 #define TAIL_IND  list->tail_index
 #define HEAD_IND  list->head_index
@@ -73,6 +74,7 @@ int ListDtor(List* list)
 {
     free(DATA);
 
+    linux(30);
     DATA = nullptr;
 
     return LIST_IS_DESTRUCTED_STATUS;
@@ -138,11 +140,25 @@ int ListTextDump(List* list)
 
 int ListGraphDump(List* list)
 {
-    FILE* file = fopen("TextForGraphDump.dot", "w");
+    FILE* file = fopen("TextForGraphDump", "w");
 
-    fprintf(file, "digraph G{}");
+    fprintf(file, "digraph G\n{\n    ");
+
+    if (SIZE < 1)
+        return 1;
+
+    size_t index = ListHead(list);
+    fprintf(file, "\"%c\"", DATA[index].value);
+
+    while ((index = ListNext(list, index)) != 0)
+        fprintf(file, " -> \"%c\"", DATA[index].value);
+
+    fprintf(file, ";\n}\n");
 
     fclose(file);
+
+    system("dot TextForGraphDump -Tsvg -o GraphDump.svg");
+    system("eog GraphDump.svg");
 
     return 1;
 }
@@ -225,7 +241,7 @@ size_t ListInsertBefore(List* list, size_t phys_index, Value_t value)
 {
     ListVerify_
 
-    if (HEAD_IND == TAIL_IND)
+    if ((HEAD_IND == TAIL_IND) && (SIZE == 0))
         return ListInsertAfter(list, phys_index, value);
 
     if (phys_index == HEAD_IND)
