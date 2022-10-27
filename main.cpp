@@ -3,7 +3,7 @@
 #include "Constants.h"
 #include "List.h"
 
-// #define NDEBUG
+#define NDEBUG
 
 #ifndef NDEBUG
 
@@ -20,6 +20,10 @@
     ListPrint(&list);            \
     ListGraphDump(&list);
 
+#define InsertAfter( phys_index, value )        \
+    ListInsertAfter(&list, phys_index, value);  \
+    ListTextDump(&list);
+
 #else
 
 #define PushBack( value )        \
@@ -27,6 +31,12 @@
 
 #define PushFront( value )       \
     ListPushFront(&list, value);
+
+#define InsertAfter( phys_index, value )    \
+    ListInsertAfter(&list, phys_index, value);
+
+#define Erase( phys_index )    \
+    ListErase(&list, phys_index);
 
 #define Dump {}
 
@@ -77,21 +87,45 @@ int main()
     // PushBack('E');
     // PushBack('f');
     // PushFront('O');
-    ListInsertAfter(&list, 0, 'd');
-    Dump;
-    PushFront('b');
-    // ListTextDump(&list);
-    PushBack('e');
-    PushFront('A');
-    ListInsertAfter(&list, 2, 'c');
-    PushFront('o');
-    Dump;
-    size_t ind_f = PushBack('f');
-    ListInsertAfter(&list, ind_f, 'g');
-    PushBack('h');
+    // ListInsertAfter(&list, 0, 34);
+    // Dump;
+    // PushFront(1234);
+    // // ListTextDump(&list);
+    // PushBack(124908);
+    // PushFront(21);
+    // ListInsertAfter(&list, ListElemIndexByLogIndex(&list, 2), -1234);
+    // PushFront(-12);
+    // Dump;
+    // PushBack(33);
+    // ListInsertAfter(&list, ListElemIndexByLogIndex(&list, 5), 789);
+    // PushBack(-12999);
 
-    ListPrint(&list);
-    ListGraphDump(&list);
+    PushBack("one");
+    PushBack("two");
+    PushBack("three");
+    PushFront("zero");
+    ListPopBack(&list);
+    ListTextDump(&list);
+    InsertAfter(2, "two point five");
+    InsertAfter(4, "zero point five");
+    PushFront("minus one");
+    ListTextDump(&list);
+
+    // ListPrint(&list);
+    // ListGraphDump(&list);
+
+    // ListLinearize(&list);
+    // ListClear(&list);
+    // ListPopBack(&list);
+    // ListGraphDump(&list);
+    // Dump
+    // ListPopFront(&list);
+    // ListPrint(&list);
+    // ListTextDump(&list);
+    // ListClear(&list);
+    // ListPrint(&list);
+    // Dump
+    // ListGraphDump(&list);
 
     ListDtor(&list);
 

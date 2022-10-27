@@ -5,6 +5,6 @@
 
 #define NLOGGING
 
-typedef char Value_t;
+typedef const char* Value_t;
 
 #endif

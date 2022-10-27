@@ -1,0 +1,4 @@
+digraph G
+{
+    "minus one" -> "zero" -> "zero point five" -> "one" -> "two" -> "two point five";
+}

@@ -33,9 +33,10 @@ int ListVerify    (List* list);
 int ListTextDump  (List* list);
 int ListGraphDump (List* list);
 
-size_t ListElemIndex (List* list, size_t log_index );
-size_t ListNext      (List* list, size_t phys_index);
-size_t ListPrev      (List* list, size_t phys_index);
+size_t ListElemIndexByLogIndex (List* list, size_t log_index );
+
+size_t ListNext (List* list, size_t phys_index);
+size_t ListPrev (List* list, size_t phys_index);
 
 size_t  ListHead (List* list);
 size_t  ListTail (List* list);
