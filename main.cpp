@@ -111,9 +111,40 @@ int main()
     PushFront("minus one");
     ListTextDump(&list);
 
-    // ListPrint(&list);
-    // ListGraphDump(&list);
+    PushBack("four");
+    PushBack("five");
+    PushBack("six");
+    PushBack("seven");
+    PushBack("eight");
+    // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
+    ListTextDump(&list);
+    ListClear(&list);
+    PushFront("new first!");
 
+    // ListPrint(&list);
+    ListGraphDump(&list);
+
+    PushBack("new second");
+    PushBack("new last...");
+    PushFront("new zero");
+    PushBack("just new1");
+    PushBack("just new2");
+    PushFront("just new3");
+    PushBack("just new4");
+    PushBack("just new5");
+    PushFront("just new6");
+    PushBack("just new7");
+    PushFront("just new8");
+    PushBack("just new9");
+    ListPopFront(&list);
+    ListPopBack(&list);
+    ListPopBack(&list);
+    ListPopBack(&list);
+    ListPopBack(&list);
+    ListPopBack(&list);
+    ListPopBack(&list);
+    ListPopBack(&list);
+    // ListErase(&list, 7);
     // ListLinearize(&list);
     // ListClear(&list);
     // ListPopBack(&list);
@@ -121,11 +152,11 @@ int main()
     // Dump
     // ListPopFront(&list);
     // ListPrint(&list);
-    // ListTextDump(&list);
+    ListTextDump(&list);
     // ListClear(&list);
     // ListPrint(&list);
     // Dump
-    // ListGraphDump(&list);
+    ListGraphDump(&list);
 
     ListDtor(&list);
 

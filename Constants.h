@@ -25,8 +25,15 @@ enum ListElemConstants
 
 enum ListConstants
 {
-    LIST_MIN_CAPACITY = 20,
-    LIST_MAXSIZE      = 100,
+    LIST_MIN_CAPACITY = 10,
+    LIST_MAX_CAPACITY = 1000,
+};
+
+enum ResizeModes
+{
+    INCREASE_LIST_CAPACITY_MODE = 1,
+    DECREASE_LIST_CAPACITY_MODE = 2,
+    WRONG_RESIZE_MODE           = 0,
 };
 
 #endif

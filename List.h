@@ -53,7 +53,7 @@ int     ListPushFront (List* list, Value_t value);
 int ListLinearize (List* list);
 
 int ListClear  (List* list);
-int ListResize (List* list);
+int ListResize (List* list, int resize_mode);
 
 int ListPrint (List* list);
 

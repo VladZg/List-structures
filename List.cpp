@@ -228,24 +228,57 @@ int ListGraphDump(List* list)
 
     FILE* file = fopen("TextForGraphDump", "w");
 
-    fprintf(file, "digraph G\n{\n    ");
+    fprintf(file, "digraph G{\n"
+                  "    rankdir = LR;\n"
+                  "    node[colour = \"black\", shape = \"rectangle\", fontsize = \"12\"];\n"
+                  "    edge[colour = \"black\"];\n");
 
-    if (SIZE < 1)
-        return 1;
+    // size_t index = ListHead(list);
+    // fprintf(file, "\"");
+    // PrintListElemValue(file, DATA[index].value);
+    // fprintf(file, "\"");
+//
+//     while ((index = ListNext(list, index)) != 0)
+//     {
+//         fprintf(file, " -> \"");
+//         PrintListElemValue(file, DATA[index].value);
+//         fprintf(file, "\"");
+//     }
+    // for (size_t index = 1; index <= CAPACITY; index++)
 
-    size_t index = ListHead(list);
-    fprintf(file, "\"");
-    PrintListElemValue(file, DATA[index].value);
-    fprintf(file, "\"");
+    // first  [shape=record,label=" <id> first  | { value | <prev> prev | <next> next }"];
 
-    while ((index = ListNext(list, index)) != 0)
+    size_t phys_index = ListHead(list);
+    size_t log_index = 0;
+    fprintf(file, "    node_start [shape = record, label = \" <phys_index> phys_index:\\n%d | { <log_index> log_index:\\n%ld | value:\\n%d | <prev> prev:\\n%d | <next> next:\\n%d }\"];\n", 0, log_index++, 0, 0, 0);
+    fprintf(file, "    node%ld [shape = record, label = \" <phys_index> phys_index:\\n%ld | { <log_index> log_index:\\n%ld | value:\\n", phys_index, phys_index, log_index++);
+    PrintListElemValue(file, DATA[phys_index].value);
+    fprintf(file, " | <prev> prev:\\n%ld | <next> next:\\n%ld }\"];\n", DATA[phys_index].prev, DATA[phys_index].next);
+
+    while ((phys_index = ListNext(list, phys_index)) != 0)
     {
-        fprintf(file, " -> \"");
-        PrintListElemValue(file, DATA[index].value);
-        fprintf(file, "\"");
+        fprintf(file, "    node%ld [shape = record, label = \" <phys_index> phys_index:\\n%ld | { <log_index> log_index:\\n%ld | value:\\n", phys_index, phys_index, log_index++);
+        PrintListElemValue(file, DATA[phys_index].value);
+        fprintf(file, " | <prev> prev:\\n%ld | <next> next:\\n%ld }\"];\n", DATA[phys_index].prev, DATA[phys_index].next);
     }
 
-    fprintf(file, ";\n}\n");
+    phys_index = ListHead(list);
+    fprintf(file, "    node_start: <next> -> node%ld;\n", phys_index);
+    fprintf(file, "    node%ld: <prev> -> node_start;\n", phys_index);
+    fprintf(file, "    node%ld: <next> -> node%ld;\n", phys_index, DATA[phys_index].next);
+    fprintf(file, "    node%ld: <prev> -> node%ld;\n", DATA[phys_index].next, phys_index);
+
+    // for (size_t index = 1; index <= CAPACITY; index++)
+    while ((phys_index = ListNext(list, phys_index)) != 0)
+    {
+        // if (list->data[index].next != 0)
+            fprintf(file, "    node%ld: <next> -> node%ld;\n", phys_index, DATA[phys_index].next);
+
+        // if ((DATA[index].prev != LIST_ELEM_FREE) && (DATA[index].prev != 0))
+            fprintf(file, "    node%ld: <prev> -> node%ld;\n", DATA[phys_index].next, phys_index);
+    }
+
+    fprintf(file, "}\n");
 
     fclose(file);
 
@@ -317,11 +350,8 @@ size_t ListInsertAfter(List* list, size_t phys_index, Value_t value)
         return 0;
     }
 
-    // if (FREE == 0)
-        // ListResize(list, 2);
-
-    if (phys_index != TAIL_IND)
-        IS_LINEAR = false;
+    if (FREE == 0)
+        ListResize(list, INCREASE_LIST_CAPACITY_MODE);
 
     size_t new_elem_index = FREE;
     FREE = DATA[FREE].next;
@@ -369,11 +399,11 @@ size_t ListInsertBefore(List* list, size_t phys_index, Value_t value)
     if ((HEAD_IND == TAIL_IND) && (SIZE == 0))
         return ListInsertAfter(list, phys_index, value);
 
-    if (phys_index != HEAD_IND || HEAD_IND != FREE + 1 || FREE == 0)
+    if ((phys_index != HEAD_IND) || (HEAD_IND != FREE + 1) || (FREE == 0))
         IS_LINEAR = false;
 
-    // if (FREE == 0)
-        // ListResize(list, 2);
+    if (FREE == 0)
+        ListResize(list, INCREASE_LIST_CAPACITY_MODE);
 
     if (phys_index == HEAD_IND)
     {
@@ -443,8 +473,8 @@ Value_t ListErase(List* list, size_t phys_index)
 
     SIZE--;
 
-    // if (SIZE <= CAPACITY / 2)
-        // ListResize(list, 2);
+    if ((SIZE <= CAPACITY / 2) && (CAPACITY > LIST_MIN_CAPACITY))
+        ListResize(list, DECREASE_LIST_CAPACITY_MODE);
 
     return deleted_value;
 }
@@ -487,9 +517,7 @@ int ListLinearize(List* list)
         for (size_t new_index = 1; new_index <= CAPACITY; new_index++)
         {
             if (data_index != 0)
-            {
                 new_data[new_index] = {DATA[data_index].value, ListNext(list, data_index), ListPrev(list, data_index)};
-            }
 
             else
             {
@@ -523,11 +551,92 @@ int ListClear(List* list)
     return LIST_IS_OK_STATUS;
 }
 
-int ListResize(List* list)
+int ListResize(List* list, int resize_mode)
 {
     ListVerifyStatus_
 
-    return LIST_IS_OK_STATUS;
+    size_t new_capacity = CAPACITY;
+    ListElem* new_data = nullptr;
+    size_t new_free = FREE;
+
+    if(resize_mode == INCREASE_LIST_CAPACITY_MODE)
+    {
+        if ((new_capacity *= 2) > LIST_MAX_CAPACITY)
+        {
+            PrintError("Size can't be more than MAX_CAPACITY");
+            return 0;
+        }
+
+        new_free = CAPACITY + 1;
+
+        new_data = (ListElem*) realloc(DATA, (new_capacity + 1) * sizeof(ListElem));
+        ASSERT(new_data != nullptr);
+
+        size_t elem_index = FREE;
+
+        while (new_data[elem_index].next != 0)
+            elem_index = DATA[elem_index].next;
+
+        if (elem_index == FREE)
+            FREE = new_free;
+
+        else
+            new_data[elem_index].next = new_free;
+
+        for (size_t index = new_free; index <= new_capacity; index++)
+            new_data[index] = {(Value_t) LIST_ELEM_POISONED_VALUE, index + 1, LIST_ELEM_FREE};
+
+        new_data[new_capacity].next = 0;
+
+        // for (size_t i = 1; i <= new_capacity; i++)
+            // fprintf(stdout, "%ld: %s\n", i, new_data[i].value);
+    }
+
+    else if (resize_mode == DECREASE_LIST_CAPACITY_MODE)
+    {
+        if ((new_capacity /= 2) < LIST_MIN_CAPACITY)
+            return LIST_IS_OK_STATUS;
+
+        // if ((IS_LINEAR == false) || (IS_LINEAR == true)  && TAIL_IND > new_capacity)
+        // {
+        //     if (ListLinearize(list) != LIST_IS_OK_STATUS)
+        //         return 0;
+        // }
+
+        new_free = 0;
+
+        for (size_t index = new_capacity; index >= 1; index--)
+        {
+            if (DATA[index].prev == LIST_ELEM_FREE)
+            {
+                if (new_free == 0)
+                {
+                    new_free = index;
+                    DATA[index].next = 0;
+                }
+                else
+                {
+                    DATA[index].next = new_free;
+                    new_free = index;
+                }
+            }
+        }
+
+        new_data = (ListElem*) realloc(DATA, (new_capacity + 1) * sizeof(ListElem));
+        ASSERT(new_data != nullptr);
+    }
+
+    else
+    {
+        PrintError("Wrong resize mode");
+        return WRONG_RESIZE_MODE;
+    }
+
+    FREE     = new_free;
+    CAPACITY = new_capacity;
+    DATA     = new_data;
+
+    return ListVerify(list);
 }
 
 int ListPrint(List* list)

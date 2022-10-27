@@ -1,4 +1,23 @@
-digraph G
-{
-    "minus one" -> "zero" -> "zero point five" -> "one" -> "two" -> "two point five";
+digraph G{
+    rankdir = LR;
+    node[colour = "black", shape = "rectangle", fontsize = "12"];
+    edge[colour = "black"];
+    node_start [shape = record, label = " <phys_index> phys_index:\n0 | { <log_index> log_index:\n0 | value:\n0 | <prev> prev:\n0 | <next> next:\n0 }"];
+    node10 [shape = record, label = " <phys_index> phys_index:\n10 | { <log_index> log_index:\n1 | value:\njust new6 | <prev> prev:\n0 | <next> next:\n7 }"];
+    node7 [shape = record, label = " <phys_index> phys_index:\n7 | { <log_index> log_index:\n2 | value:\njust new3 | <prev> prev:\n10 | <next> next:\n1 }"];
+    node1 [shape = record, label = " <phys_index> phys_index:\n1 | { <log_index> log_index:\n3 | value:\nnew zero | <prev> prev:\n7 | <next> next:\n6 }"];
+    node6 [shape = record, label = " <phys_index> phys_index:\n6 | { <log_index> log_index:\n4 | value:\nnew first! | <prev> prev:\n1 | <next> next:\n4 }"];
+    node4 [shape = record, label = " <phys_index> phys_index:\n4 | { <log_index> log_index:\n5 | value:\nnew second | <prev> prev:\n6 | <next> next:\n0 }"];
+    node_start: <next> -> node10;
+    node10: <prev> -> node_start;
+    node10: <next> -> node7;
+    node7: <prev> -> node10;
+    node7: <next> -> node1;
+    node1: <prev> -> node7;
+    node1: <next> -> node6;
+    node6: <prev> -> node1;
+    node6: <next> -> node4;
+    node4: <prev> -> node6;
+    node4: <next> -> node0;
+    node0: <prev> -> node4;
 }
