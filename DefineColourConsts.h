@@ -1,5 +1,14 @@
-#ifndef COLOURCONSTS_H
-#define COLOURCONSTS_H
+#ifndef DEFINECOLOURCONSTS_H
+#define DEFINECOLOURCONSTS_H
+
+#undef KNRM
+#undef KRED
+#undef KGRN
+#undef KYEL
+#undef KBLU
+#undef KMAG
+#undef KCYN
+#undef KWHT
 
 #ifdef NLOGGING
 

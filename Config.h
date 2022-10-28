@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #define NLOGGING
+// #define NDEBUG
 
 typedef const char* Value_t;
 

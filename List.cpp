@@ -2,18 +2,24 @@
 #include <stdlib.h>
 #include <cstdio>
 #include "Constants.h"
-#include "ColourConsts.h"
+#include "DefineColourConsts.h"
 #include "Assert.h"
 #include "List.h"
 
 //DSL
 #define DATA      list->data
+#define STATUS    list->status
 #define TAIL_IND  list->tail_index
 #define HEAD_IND  list->head_index
 #define SIZE      list->size
 #define CAPACITY  list->capacity
 #define FREE      list->free
 #define IS_LINEAR list->is_linear
+
+#ifdef NDEBUG
+#undef  ASSERT( condition )
+#define ASSERT( condition ) {}
+#endif
 
 #define PrintError( msg )                           \
                                                     \
@@ -49,6 +55,8 @@
 
 int ListCtor(List* list)
 {
+    ASSERT(list != nullptr);
+
     SIZE      = 0;
     CAPACITY  = LIST_MIN_CAPACITY;
 
@@ -75,8 +83,6 @@ int ListCtor(List* list)
 
     DATA[CAPACITY].next = 0;
 
-    list->is_linear = true;
-
     ListVerifyStatus_
 
     return LIST_IS_OK_STATUS;
@@ -87,8 +93,14 @@ int ListDtor(List* list)
     ListVerifyStatus_
 
     free(DATA);
-
     DATA = nullptr;
+
+    STATUS = LIST_IS_DESTRUCTED_STATUS;
+    CAPACITY = LIST_DEAD_CAPACITY;
+    FREE = LIST_DEAD_FREE;
+    SIZE = LIST_DEAD_SIZE;
+    HEAD_IND = LIST_DEAD_HEAD_IND;
+    TAIL_IND = LIST_DEAD_HEAD_IND;
 
     return LIST_IS_DESTRUCTED_STATUS;
 }
@@ -102,6 +114,9 @@ int ListVerify(List* list)
 
     if (DATA == nullptr)
         list_status = LIST_DATA_IS_NULL_STATUS;
+
+    if (STATUS == LIST_IS_DESTRUCTED_STATUS)
+        list_status = LIST_IS_DESTRUCTED_STATUS;
 
     if (SIZE > CAPACITY)
         list_status = LIST_OVERFLOW_STATUS;
@@ -118,6 +133,8 @@ int ListVerify(List* list)
     if (IS_LINEAR > 1)
         list_status = LIST_IS_LINEAR_WRONG_STATUS;
 
+    STATUS = list_status;
+
     if (list_status != LIST_IS_OK_STATUS)
         return list_status;
 
@@ -132,6 +149,8 @@ int ListVerify(List* list)
 
 static int IsListEmpty(List* list)
 {
+    ListVerifyStatus_
+
     if (SIZE)
         return LIST_IS_OK_STATUS;
 
@@ -140,155 +159,196 @@ static int IsListEmpty(List* list)
 
 static void PrintListElemValue(FILE* file, int value)
 {
+    ASSERT(file != nullptr);
+
     fprintf(file, "%d", value);
 }
 
 static void PrintListElemValue(FILE* file, char value)
 {
+    ASSERT(file != nullptr);
+
     fprintf(file, "%c", value);
 }
 
 static void PrintListElemValue(FILE* file, double value)
 {
+    ASSERT(file != nullptr);
+
     fprintf(file, "%lf", value);
 }
 
 static void PrintListElemValue(FILE* file, const char* value)
 {
+    ASSERT(file != nullptr);
+
     fprintf(file, "%s", value);
 }
 
 static void PrintListElemValue(FILE* file, float value)
 {
+    ASSERT(file != nullptr);
+
     fprintf(file, "%f", value);
 }
 
-int ListTextDump(List* list)
+int ListTextDump(List* list, FILE* file)
 {
-    fprintf(stdout, KYEL "\n%s:\n\n" KNRM, __PRETTY_FUNCTION__);
+    ListVerifyStatus_
 
-    fprintf(stdout, KBLU "\tsize      " KNRM "= %ld\n"
-                    KBLU "\tcapacity  " KNRM "= %ld\n"
-                    KBLU "\tis_linear " KNRM "= %d \n"
-                    KBLU "\thead_ind  " KNRM "= %ld\n"
-                    KBLU "\ttail_ind  " KNRM "= %ld\n"
-                    KBLU "\tfree      " KNRM "= %ld\n\n", SIZE, CAPACITY, IS_LINEAR, HEAD_IND, TAIL_IND, FREE);
+    ASSERT(file != nullptr);
 
-    fprintf(stdout, KBLU "\tdata = " KNRM "{\n");
+    if (file != stdout)
+    {
+        #include "UndefColourConsts.h"
+    }
+
+    fprintf(file, KYEL "  %s:\n\n" KNRM, __PRETTY_FUNCTION__);
+
+    fprintf(file, KBLU "\tsize      " KNRM "= %ld\n"
+                  KBLU "\tcapacity  " KNRM "= %ld\n"
+                  KBLU "\tis_linear " KNRM "= %d \n"
+                  KBLU "\thead_ind  " KNRM "= %ld\n"
+                  KBLU "\ttail_ind  " KNRM "= %ld\n"
+                  KBLU "\tfree      " KNRM "= %ld\n\n", SIZE, CAPACITY, IS_LINEAR, HEAD_IND, TAIL_IND, FREE);
+
+    fprintf(file, KBLU "\tdata = " KNRM "{\n");
 
     for (size_t index = 1; index <= CAPACITY; index++)
     {
-        fprintf(stdout, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
+        fprintf(file, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
 
         if (DATA[index].value != (Value_t) LIST_ELEM_POISONED_VALUE)
-            PrintListElemValue(stdout, DATA[index].value);
+            PrintListElemValue(file, DATA[index].value);
 
-        else fprintf(stdout, "NULL (" KMAG "POISON" KNRM ")");
+        else fprintf(file, "NULL (" KMAG "POISON" KNRM ")");
 
-        fprintf(stdout, "\n");
+        fprintf(file, "\n");
     }
 
-    fprintf(stdout, "\t}\n");
+    fprintf(file, "\t}\n");
 
-    fprintf(stdout, KBLU "\n\tnext " KNRM "= {\n");
+    fprintf(file, KBLU "\n\tnext " KNRM "= {\n");
 
     for (size_t index = 1; index <= CAPACITY; index++)
     {
-        fprintf(stdout, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
+        fprintf(file, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
 
-        fprintf(stdout, "%ld\n", DATA[index].next);
+        fprintf(file, "%ld\n", DATA[index].next);
     }
 
-    fprintf(stdout, "\t}\n");
+    fprintf(file, "\t}\n");
 
-    fprintf(stdout, KBLU "\n\tprev " KNRM "= {\n");
+    fprintf(file, KBLU "\n\tprev " KNRM "= {\n");
 
     for (size_t index = 1; index <= CAPACITY; index++)
     {
-        fprintf(stdout, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
+        fprintf(file, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
 
         if (DATA[index].prev != LIST_ELEM_FREE)
-            fprintf(stdout, "%ld\n", DATA[index].prev);
+            fprintf(file, "%ld\n", DATA[index].prev);
 
-        else fprintf(stdout, "%X (" KMAG "POISON" KNRM ")\n", LIST_ELEM_FREE);
+        else fprintf(file, "%X (" KMAG "POISON" KNRM ")\n", LIST_ELEM_FREE);
     }
 
-    fprintf(stdout, "\t}\n\n");
+    fprintf(file, "\t}\n\n");
+
+    if (file != stdout)
+    {
+        #include "DefineColourConsts.h"
+    }
 
     return 1;
 }
 
-int ListGraphDump(List* list)
+int ListGraphDump(List* list, size_t dump_num)
 {
+    ListVerifyStatus_
+
     if (IsListEmpty(list) == LIST_IS_EMPTY_STATUS)
     {
         PrintError("List is empty");
         return LIST_IS_EMPTY_STATUS;
     }
 
-    FILE* file = fopen("TextForGraphDump", "w");
+    FILE* file_dot = fopen("./TextForGraphDump", "w");
 
-    fprintf(file, "digraph G{\n"
-                  "    rankdir = LR;\n"
-                  "    node[colour = \"black\", shape = \"rectangle\", fontsize = \"12\"];\n"
-                  "    edge[colour = \"black\"];\n");
-
-    // size_t index = ListHead(list);
-    // fprintf(file, "\"");
-    // PrintListElemValue(file, DATA[index].value);
-    // fprintf(file, "\"");
-//
-//     while ((index = ListNext(list, index)) != 0)
-//     {
-//         fprintf(file, " -> \"");
-//         PrintListElemValue(file, DATA[index].value);
-//         fprintf(file, "\"");
-//     }
-    // for (size_t index = 1; index <= CAPACITY; index++)
-
-    // first  [shape=record,label=" <id> first  | { value | <prev> prev | <next> next }"];
+    fprintf(file_dot, "digraph G{\n"
+                      "    rankdir = LR;\n"
+                      "    node[colour = black, shape = rectangle, fontsize = 12];\n"
+                      "    edge[colour = black];\n");
 
     size_t phys_index = ListHead(list);
     size_t log_index = 0;
-    fprintf(file, "    node_start [shape = record, label = \" <phys_index> phys_index:\\n%d | { <log_index> log_index:\\n%ld | value:\\n%d | <prev> prev:\\n%d | <next> next:\\n%d }\"];\n", 0, log_index++, 0, 0, 0);
-    fprintf(file, "    node%ld [shape = record, label = \" <phys_index> phys_index:\\n%ld | { <log_index> log_index:\\n%ld | value:\\n", phys_index, phys_index, log_index++);
-    PrintListElemValue(file, DATA[phys_index].value);
-    fprintf(file, " | <prev> prev:\\n%ld | <next> next:\\n%ld }\"];\n", DATA[phys_index].prev, DATA[phys_index].next);
+    fprintf(file_dot, "    node0 [style = filled, color = lightblue, colour = black, shape = record, label = \" <phys_index> phys_index:\\n%d | <log_index> log_index:\\n%ld | value:\\n%d | <prev> prev:\\n%d | <next> next:\\n%d }\"];\n", 0, log_index++, 0, 0, 0);
+    fprintf(file_dot, "    node%ld [shape = record, label = \" <phys_index> phys_index:\\n%ld | <log_index> log_index:\\n%ld | value:\\n", phys_index, phys_index, log_index++);
+    PrintListElemValue(file_dot, DATA[phys_index].value);
+    fprintf(file_dot, " | <prev> prev:\\n%ld | <next> next:\\n%ld \"];\n", DATA[phys_index].prev, DATA[phys_index].next);
 
     while ((phys_index = ListNext(list, phys_index)) != 0)
     {
-        fprintf(file, "    node%ld [shape = record, label = \" <phys_index> phys_index:\\n%ld | { <log_index> log_index:\\n%ld | value:\\n", phys_index, phys_index, log_index++);
-        PrintListElemValue(file, DATA[phys_index].value);
-        fprintf(file, " | <prev> prev:\\n%ld | <next> next:\\n%ld }\"];\n", DATA[phys_index].prev, DATA[phys_index].next);
+        fprintf(file_dot, "    node%ld [shape = record, label = \" <phys_index> phys_index:\\n%ld | <log_index> log_index:\\n%ld | value:\\n", phys_index, phys_index, log_index++);
+        PrintListElemValue(file_dot, DATA[phys_index].value);
+        fprintf(file_dot, " | <prev> prev:\\n%ld | <next> next:\\n%ld \"];\n", DATA[phys_index].prev, DATA[phys_index].next);
     }
 
     phys_index = ListHead(list);
-    fprintf(file, "    node_start: <next> -> node%ld;\n", phys_index);
-    fprintf(file, "    node%ld: <prev> -> node_start;\n", phys_index);
-    fprintf(file, "    node%ld: <next> -> node%ld;\n", phys_index, DATA[phys_index].next);
-    fprintf(file, "    node%ld: <prev> -> node%ld;\n", DATA[phys_index].next, phys_index);
+    // fprintf(file_dot, "    node0: <next> -> node%ld: <next>;\n", phys_index);
+    fprintf(file_dot, "    node%ld: <prev> -> node0: <prev>;\n", phys_index);
+    fprintf(file_dot, "    node%ld: <next> -> node%ld: <next>;\n", phys_index, DATA[phys_index].next);
+    fprintf(file_dot, "    node%ld: <prev> -> node%ld: <prev>;\n", DATA[phys_index].next, phys_index);
 
     // for (size_t index = 1; index <= CAPACITY; index++)
     while ((phys_index = ListNext(list, phys_index)) != 0)
     {
         // if (list->data[index].next != 0)
-            fprintf(file, "    node%ld: <next> -> node%ld;\n", phys_index, DATA[phys_index].next);
+            fprintf(file_dot, "    node%ld: <next> -> node%ld: <next>;\n", phys_index, DATA[phys_index].next);
 
         // if ((DATA[index].prev != LIST_ELEM_FREE) && (DATA[index].prev != 0))
-            fprintf(file, "    node%ld: <prev> -> node%ld;\n", DATA[phys_index].next, phys_index);
+            fprintf(file_dot, "    node%ld: <prev> -> node%ld: <prev>;\n", DATA[phys_index].next, phys_index);
     }
 
-    fprintf(file, "}\n");
+//     for (size_t index = 0; index <= CAPACITY; index++)
+//     {
+//         // if (list->data[index].next != 0)
+//             fprintf(file_dot, "    node%ld: <next> -> node%ld: <next>;\n", index, DATA[index].next);
+//
+//         // if ((DATA[index].prev != LIST_ELEM_FREE) && (DATA[index].prev != 0))
+//             fprintf(file_dot, "    node%ld: <prev> -> node%ld: <prev>;\n", DATA[index].prev, index);
+//     }
 
-    fclose(file);
+    fprintf(file_dot, "}\n");
 
-    system("dot TextForGraphDump -Tsvg -o GraphDump.svg");
-    system("eog GraphDump.svg");
+    fclose(file_dot);
+
+    system("dot TextForGraphDump -Tsvg -o ./GraphDumpImages/GraphDump.svg");
+
+    FILE* file_html = fopen("./FullDump.html", "r+");
+    fseek(file_html, 0, SEEK_SET);
+
+    fprintf(file_html, "<pre>\n");
+    fprintf(file_html, "    <h1> ListFullDump </h1>\n");
+
+    // #include "./UndefColourConsts.h"
+    ListTextDump(list, file_html);
+    // #include "./DefineColourConsts.h"
+
+    fprintf(file_html,  "    \n\n"
+                        "        <img src = \"./GraphDumpImages/GraphDump.svg\">\n"
+                        "    <hr>\n"
+                        "<!-- ------------------------------------------------------------ -->\n");
+
+    fprintf(file_html, "</pre>\n\n");
+
+    fclose(file_html);
+
+    // system("eog GraphDump.svg");
+    system("xdg-open \"./FullDump.html\"");
 
     return LIST_IS_OK_STATUS;
 }
 
-size_t ListElemIndexByLogIndex(List* list, size_t log_index)
+size_t ListFindElemIndexByLogIndex(List* list, size_t log_index) //C-r-I-n-G-e
 {
     ListVerify_
 
@@ -431,6 +491,12 @@ Value_t ListErase(List* list, size_t phys_index)
     ListVerify_
     PhysIndexVerify_
 
+    if (DATA[phys_index].prev == LIST_ELEM_FREE)
+    {
+        PrintError("Wrong index");
+        return (Value_t) LIST_ELEM_POISONED_VALUE;;
+    }
+
     if (SIZE == 0)
     {
         PrintError("List is empty, can't delete element");
@@ -439,7 +505,16 @@ Value_t ListErase(List* list, size_t phys_index)
 
     Value_t deleted_value = DATA[phys_index].value;
 
-    if (phys_index == HEAD_IND)
+    if ((phys_index == HEAD_IND) && (phys_index == TAIL_IND))
+    {
+        DATA[phys_index] = {(Value_t) LIST_ELEM_POISONED_VALUE, FREE, LIST_ELEM_FREE};
+
+        HEAD_IND = 0;
+        TAIL_IND = 0;
+        FREE = phys_index;
+    }
+
+    else if (phys_index == HEAD_IND)
     {
         size_t new_head_ind = DATA[HEAD_IND].next;
 
@@ -474,7 +549,10 @@ Value_t ListErase(List* list, size_t phys_index)
     SIZE--;
 
     if ((SIZE <= CAPACITY / 2) && (CAPACITY > LIST_MIN_CAPACITY))
-        ListResize(list, DECREASE_LIST_CAPACITY_MODE);
+    {
+        if (ListResize(list, DECREASE_LIST_CAPACITY_MODE) != LIST_IS_OK_STATUS)
+            return (Value_t) LIST_ELEM_POISONED_VALUE;
+    }
 
     return deleted_value;
 }
@@ -509,25 +587,28 @@ int ListLinearize(List* list)
         ASSERT(new_data != nullptr);
 
         new_data[0] = {(Value_t) LIST_ELEM_POISONED_VALUE, 0, 0};
-        FREE = 0;
+        // FREE = 0;
 
         size_t data_index = ListHead(list);
-        fprintf(stdout, "\n%ld\n", data_index);
+        // fprintf(stdout, "\n%ld\n", data_index);
 
         for (size_t new_index = 1; new_index <= CAPACITY; new_index++)
         {
             if (data_index != 0)
-                new_data[new_index] = {DATA[data_index].value, ListNext(list, data_index), ListPrev(list, data_index)};
+            {
+                new_data[new_index] = {DATA[data_index].value, (new_index == CAPACITY ? 0 : new_index + 1), new_index - 1};
+                data_index = ListNext(list, data_index);
+            }
 
             else
             {
                 if (FREE == 0) FREE = new_index;
 
                 new_data[new_index] = {(Value_t) LIST_ELEM_POISONED_VALUE, (new_index == CAPACITY ? 0 : new_index + 1), LIST_ELEM_FREE};
+                data_index = FREE;
             }
 
-            data_index = ListNext(list, data_index);
-            fprintf(stdout, "\n%ld\n", data_index);
+            // fprintf(stdout, "\n%ld\n", data_index);
         }
 
         free(DATA);
@@ -546,7 +627,7 @@ int ListClear(List* list)
     ListVerifyStatus_
 
     while (SIZE > 0)
-        ListPopBack(list);
+        ListPopBack(list) == (Value_t) LIST_ELEM_POISONED_VALUE;
 
     return LIST_IS_OK_STATUS;
 }
@@ -597,11 +678,11 @@ int ListResize(List* list, int resize_mode)
         if ((new_capacity /= 2) < LIST_MIN_CAPACITY)
             return LIST_IS_OK_STATUS;
 
-        // if ((IS_LINEAR == false) || (IS_LINEAR == true)  && TAIL_IND > new_capacity)
-        // {
-        //     if (ListLinearize(list) != LIST_IS_OK_STATUS)
-        //         return 0;
-        // }
+        if ((IS_LINEAR == false) || (IS_LINEAR == true)  && (TAIL_IND > new_capacity))
+        {
+            if (ListLinearize(list) != LIST_IS_OK_STATUS)
+                return 0;
+        }
 
         new_free = 0;
 
@@ -621,6 +702,8 @@ int ListResize(List* list, int resize_mode)
                 }
             }
         }
+
+        DATA[TAIL_IND].next = 0;
 
         new_data = (ListElem*) realloc(DATA, (new_capacity + 1) * sizeof(ListElem));
         ASSERT(new_data != nullptr);

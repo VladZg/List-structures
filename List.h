@@ -2,8 +2,9 @@
 #define LIST_H
 
 #include "Config.h"
-#include "Constants.h"
+#include <cstdio>
 #include <stdbool.h>
+#include "Constants.h"
 
 struct ListElem
 {
@@ -24,16 +25,18 @@ struct List
     size_t  free;
 
     bool    is_linear;
+
+    int     status;
 };
 
 int ListCtor (List* list);
 int ListDtor (List* list);
 
 int ListVerify    (List* list);
-int ListTextDump  (List* list);
-int ListGraphDump (List* list);
+int ListTextDump  (List* list, FILE* file = stdout);
+int ListGraphDump (List* list, size_t dump_num);
 
-size_t ListElemIndexByLogIndex (List* list, size_t log_index );
+size_t ListFindElemIndexByLogIndex (List* list, size_t log_index );
 
 size_t ListNext (List* list, size_t phys_index);
 size_t ListPrev (List* list, size_t phys_index);
