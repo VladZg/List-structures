@@ -110,41 +110,102 @@ int ListVerify(List* list)
     int list_status = LIST_IS_OK_STATUS;
 
     if (list == nullptr)
+    {
         list_status = LIST_IS_NULL_STATUS;
+        PrintError("List is null");
+    }
 
     if (DATA == nullptr)
+    {
         list_status = LIST_DATA_IS_NULL_STATUS;
+        PrintError("List data is null");
+    }
 
     if (STATUS == LIST_IS_DESTRUCTED_STATUS)
+    {
         list_status = LIST_IS_DESTRUCTED_STATUS;
+        PrintError("List is destructed");
+    }
 
     if (SIZE > CAPACITY)
+    {
         list_status = LIST_OVERFLOW_STATUS;
+        PrintError("List size > capacity");
+    }
 
     if (HEAD_IND > CAPACITY)
+    {
         list_status = HEAD_IND_WRONG_STATUS;
+        PrintError("List head index > capacity");
+    }
 
     if (TAIL_IND > CAPACITY)
+    {
         list_status = TAIL_IND_WRONG_STATUS;
+        PrintError("List tail index < capactiy");
+    }
 
     if (FREE > CAPACITY)
+    {
         list_status = LIST_FREE_WRONG_STATUS;
+        PrintError("List free index > capacity");
+    }
 
     if (IS_LINEAR > 1)
+    {
         list_status = LIST_IS_LINEAR_WRONG_STATUS;
+        PrintError("List linear status is wrong");
+    }
 
     STATUS = list_status;
 
     if (list_status != LIST_IS_OK_STATUS)
         return list_status;
 
-    // for (int i = 1; i <= SIZE; i++)
-    // {
-    //     if (ListNext)
-    //     return
-    // }
-
     return LIST_IS_OK_STATUS;
+}
+
+int ListFullVerify (List* list)
+{
+    int list_status = ListVerify(list);
+
+    if (list_status == LIST_IS_OK_STATUS)
+        return list_status;
+
+    if (DATA[HEAD_IND].prev != 0)
+    {
+        list_status = LIST_HEAD_IS_WRONG_STATUS;
+        PrintError("List head element is wrong");
+    }
+
+    if (DATA[TAIL_IND].next != 0)
+    {
+        list_status = LIST_TAIL_IS_WRONG_STATUS;
+        PrintError("List tail element is wrong");
+    }
+
+    if (SIZE >= 1)
+    {
+        size_t index = HEAD_IND;
+
+        while (DATA[index].next != 0)
+        {
+            if ((index != HEAD_IND) && (index != TAIL_IND))
+            {
+                if (DATA[DATA[index].next].prev != index)
+                {
+                    PrintError("List is damaged");
+                    list_status = LIST_IS_SOMEWHERE_WRONG_STATUS;
+                }
+            }
+
+            index = DATA[index].next;
+        }
+    }
+
+    STATUS = list_status;
+
+    return list_status;
 }
 
 static int IsListEmpty(List* list)
@@ -321,7 +382,11 @@ int ListGraphDump(List* list, size_t dump_num)
 
     fclose(file_dot);
 
-    system("dot TextForGraphDump -Tsvg -o ./GraphDumpImages/GraphDump.svg");
+    char* dump_comand = (char*) calloc(100, sizeof(char));
+    sprintf(dump_comand, "dot TextForGraphDump -Tsvg -o ./GraphDumpImages/GraphDump%ld.svg", dump_num);
+
+    system(dump_comand);
+    free(dump_comand);
 
     FILE* file_html = fopen("./FullDump.html", "r+");
     fseek(file_html, 0, SEEK_SET);
@@ -334,9 +399,9 @@ int ListGraphDump(List* list, size_t dump_num)
     // #include "./DefineColourConsts.h"
 
     fprintf(file_html,  "    \n\n"
-                        "        <img src = \"./GraphDumpImages/GraphDump.svg\">\n"
+                        "        <img src = \"./GraphDumpImages/GraphDump%ld.svg\">\n"
                         "    <hr>\n"
-                        "<!-- ------------------------------------------------------------ -->\n");
+                        "<!-- ------------------------------------------------------------ -->\n", dump_num);
 
     fprintf(file_html, "</pre>\n\n");
 
@@ -404,17 +469,24 @@ size_t ListInsertAfter(List* list, size_t phys_index, Value_t value)
 {
     ListVerify_
 
-    if (phys_index > CAPACITY)
+    if ((phys_index > CAPACITY) ||
+        ((DATA[phys_index].prev == LIST_ELEM_FREE) && ((SIZE > 0) || (phys_index != HEAD_IND))))
     {
         PrintError("Wrong index");
         return 0;
     }
 
     if (FREE == 0)
-        ListResize(list, INCREASE_LIST_CAPACITY_MODE);
+    {
+        if (ListResize(list, INCREASE_LIST_CAPACITY_MODE) != LIST_IS_OK_STATUS)
+            return 0;
+    }
 
     size_t new_elem_index = FREE;
     FREE = DATA[FREE].next;
+
+    // fprintf(stdout, "Dump before insert:\n");
+    // ListTextDump(list);
 
     if ((phys_index == HEAD_IND) && (phys_index == TAIL_IND) && (SIZE == 0))
     {
@@ -426,7 +498,7 @@ size_t ListInsertAfter(List* list, size_t phys_index, Value_t value)
 
     else if (phys_index == TAIL_IND)
     {
-        if (FREE != TAIL_IND + 1)
+        if (new_elem_index != TAIL_IND + 1)
             IS_LINEAR = false;
 
         DATA[TAIL_IND].next = new_elem_index;
@@ -439,12 +511,25 @@ size_t ListInsertAfter(List* list, size_t phys_index, Value_t value)
     {
         IS_LINEAR = false;
 
-        DATA[new_elem_index] = {value, DATA[phys_index].next, phys_index};
-        DATA[DATA[phys_index].next].prev = new_elem_index;
-        DATA[phys_index].next = new_elem_index;
+        if (phys_index != 0)
+        {
+            DATA[new_elem_index] = {value, DATA[phys_index].next, phys_index};
+            DATA[DATA[phys_index].next].prev = new_elem_index;
+            DATA[phys_index].next = new_elem_index;
+        }
+
+        else
+        {
+            DATA[new_elem_index] = {value, HEAD_IND, 0};
+            DATA[HEAD_IND].prev = new_elem_index;
+            HEAD_IND = new_elem_index;
+        }
     }
 
     SIZE++;
+
+    // fprintf(stdout, "Dump after insert:\n");
+    // ListTextDump(list);
 
     ListVerify_
 
@@ -454,21 +539,27 @@ size_t ListInsertAfter(List* list, size_t phys_index, Value_t value)
 size_t ListInsertBefore(List* list, size_t phys_index, Value_t value)
 {
     ListVerify_
-    PhysIndexVerify_
+
+    if ((phys_index == 0) || (phys_index > CAPACITY) ||
+        ((DATA[phys_index].prev == LIST_ELEM_FREE) && ((SIZE > 0) || (phys_index == HEAD_IND))))
+    {
+        PrintError("Wrong index");
+        return 0;
+    }
 
     if ((HEAD_IND == TAIL_IND) && (SIZE == 0))
         return ListInsertAfter(list, phys_index, value);
 
-    if ((phys_index != HEAD_IND) || (HEAD_IND != FREE + 1) || (FREE == 0))
-        IS_LINEAR = false;
-
     if (FREE == 0)
-        ListResize(list, INCREASE_LIST_CAPACITY_MODE);
+    {
+        if (ListResize(list, INCREASE_LIST_CAPACITY_MODE) != LIST_IS_OK_STATUS)
+            return 0;
+    }
+
+    IS_LINEAR = false;
 
     if (phys_index == HEAD_IND)
     {
-        IS_LINEAR = false;
-
         size_t new_elem_index = FREE;
         FREE = DATA[FREE].next;
 
@@ -574,7 +665,7 @@ Value_t ListPopFront(List* list)
 
 int ListPushFront(List* list, Value_t value)
 {
-    return ListInsertBefore(list, HEAD_IND, value);;
+    return ListInsertAfter(list, 0, value);;
 }
 
 int ListLinearize(List* list)
@@ -587,18 +678,15 @@ int ListLinearize(List* list)
         ASSERT(new_data != nullptr);
 
         new_data[0] = {(Value_t) LIST_ELEM_POISONED_VALUE, 0, 0};
-        // FREE = 0;
+
+        FREE = 0;
 
         size_t data_index = ListHead(list);
-        // fprintf(stdout, "\n%ld\n", data_index);
 
         for (size_t new_index = 1; new_index <= CAPACITY; new_index++)
         {
             if (data_index != 0)
-            {
                 new_data[new_index] = {DATA[data_index].value, (new_index == CAPACITY ? 0 : new_index + 1), new_index - 1};
-                data_index = ListNext(list, data_index);
-            }
 
             else
             {
@@ -608,8 +696,11 @@ int ListLinearize(List* list)
                 data_index = FREE;
             }
 
-            // fprintf(stdout, "\n%ld\n", data_index);
+            data_index = ListNext(list, data_index);
         }
+
+        for (size_t free_elem_index = FREE; free_elem_index <= CAPACITY; free_elem_index++)
+            new_data[free_elem_index].prev = LIST_ELEM_FREE;
 
         free(DATA);
 
@@ -617,6 +708,10 @@ int ListLinearize(List* list)
         IS_LINEAR = true;
         HEAD_IND = (SIZE == 0 ? 0 : 1);
         TAIL_IND = (SIZE == 0 ? 0 : SIZE);
+        DATA[TAIL_IND].next = 0;
+
+        // fprintf(stdout, "Dump after Linearization:\n");
+        // ListTextDump(list);
     }
 
     return LIST_IS_OK_STATUS;
@@ -630,6 +725,16 @@ int ListClear(List* list)
         ListPopBack(list) == (Value_t) LIST_ELEM_POISONED_VALUE;
 
     return LIST_IS_OK_STATUS;
+}
+
+static void FindNullFreeElem(List* list, size_t new_free)
+{
+    size_t free_elem_index = FREE;
+
+    while (DATA[free_elem_index].next != 0)
+        free_elem_index = DATA[free_elem_index].next;
+
+    DATA[free_elem_index].next = new_free;
 }
 
 int ListResize(List* list, int resize_mode)
@@ -653,18 +758,27 @@ int ListResize(List* list, int resize_mode)
         new_data = (ListElem*) realloc(DATA, (new_capacity + 1) * sizeof(ListElem));
         ASSERT(new_data != nullptr);
 
-        size_t elem_index = FREE;
+        if (SIZE != 0)
+        {
+            size_t elem_index = HEAD_IND;
 
-        while (new_data[elem_index].next != 0)
-            elem_index = DATA[elem_index].next;
+            while (new_data[elem_index].next != 0)
+                elem_index = DATA[elem_index].next;
 
-        if (elem_index == FREE)
-            FREE = new_free;
+            if (FREE == 0)
+            {
+                FREE = new_free;
+                new_data[elem_index].next = FREE;
+            }
 
-        else
-            new_data[elem_index].next = new_free;
+            else FindNullFreeElem(list, new_free);
+        }
 
-        for (size_t index = new_free; index <= new_capacity; index++)
+        // fprintf(stdout, "%ld\n", FREE);
+
+        else FindNullFreeElem(list, new_free);
+
+        for (size_t index = FREE; index <= new_capacity; index++)
             new_data[index] = {(Value_t) LIST_ELEM_POISONED_VALUE, index + 1, LIST_ELEM_FREE};
 
         new_data[new_capacity].next = 0;
@@ -678,27 +792,30 @@ int ListResize(List* list, int resize_mode)
         if ((new_capacity /= 2) < LIST_MIN_CAPACITY)
             return LIST_IS_OK_STATUS;
 
-        if ((IS_LINEAR == false) || (IS_LINEAR == true)  && (TAIL_IND > new_capacity))
+        if ((IS_LINEAR == false) || ((IS_LINEAR == true)  && (TAIL_IND > new_capacity)))
         {
             if (ListLinearize(list) != LIST_IS_OK_STATUS)
                 return 0;
         }
 
-        new_free = 0;
+        // fprintf(stdout, "Dump while resize:\n");
+        // ListTextDump(list);
+
+        FREE = 0;
 
         for (size_t index = new_capacity; index >= 1; index--)
         {
             if (DATA[index].prev == LIST_ELEM_FREE)
             {
-                if (new_free == 0)
+                if (FREE == 0)
                 {
-                    new_free = index;
+                    FREE = index;
                     DATA[index].next = 0;
                 }
                 else
                 {
-                    DATA[index].next = new_free;
-                    new_free = index;
+                    DATA[index].next = FREE;
+                    FREE = index;
                 }
             }
         }
@@ -715,9 +832,11 @@ int ListResize(List* list, int resize_mode)
         return WRONG_RESIZE_MODE;
     }
 
-    FREE     = new_free;
     CAPACITY = new_capacity;
     DATA     = new_data;
+
+    // fprintf(stdout, "Dump after resize:\n");
+    // ListTextDump(list);
 
     return ListVerify(list);
 }

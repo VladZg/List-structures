@@ -32,9 +32,10 @@ struct List
 int ListCtor (List* list);
 int ListDtor (List* list);
 
-int ListVerify    (List* list);
-int ListTextDump  (List* list, FILE* file = stdout);
-int ListGraphDump (List* list, size_t dump_num);
+int ListVerify     (List* list);
+int ListFullVerify (List* list);
+int ListTextDump   (List* list, FILE* file = stdout);
+int ListGraphDump  (List* list, size_t dump_num);
 
 size_t ListFindElemIndexByLogIndex (List* list, size_t log_index );
 
