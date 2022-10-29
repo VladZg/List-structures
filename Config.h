@@ -3,9 +3,11 @@
 
 #include <stdlib.h>
 
-#define NLOGGING
-// #define NDEBUG
+// #define NLOGGING
+#define NDEBUG
+// #define NDUMP
+// #define NOPEN_DUMPS
 
-typedef const char* Value_t;
+typedef double Value_t;
 
 #endif

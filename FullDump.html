@@ -2,18 +2,18 @@
     <h1> ListFullDump </h1>
   int ListTextDump(List*, FILE*):
 
-	size      = 4
+	size      = 0
 	capacity  = 10
 	is_linear = 1 
-	head_ind  = 1
-	tail_ind  = 4
-	free      = 5
+	head_ind  = 0
+	tail_ind  = 0
+	free      = 1
 
 	data = {
-		[01]: 0
-		[02]: -1
-		[03]: -2
-		[04]: -3
+		[01]: NULL (POISON)
+		[02]: NULL (POISON)
+		[03]: NULL (POISON)
+		[04]: NULL (POISON)
 		[05]: NULL (POISON)
 		[06]: NULL (POISON)
 		[07]: NULL (POISON)
@@ -26,7 +26,7 @@
 		[01]: 2
 		[02]: 3
 		[03]: 4
-		[04]: 0
+		[04]: 5
 		[05]: 6
 		[06]: 7
 		[07]: 8
@@ -36,10 +36,10 @@
 	}
 
 	prev = {
-		[01]: 0
-		[02]: 1
-		[03]: 2
-		[04]: 3
+		[01]: BAAAAD (POISON)
+		[02]: BAAAAD (POISON)
+		[03]: BAAAAD (POISON)
+		[04]: BAAAAD (POISON)
 		[05]: BAAAAD (POISON)
 		[06]: BAAAAD (POISON)
 		[07]: BAAAAD (POISON)
@@ -55,17 +55,33 @@
 <!-- ------------------------------------------------------------ -->
 </pre>
 
-ON)
-		[36]: NULL (POISON)
-		[37]: NULL (POISON)
-		[38]: NULL (POISON)
-		[39]: NULL (POISON)
-		[40]: NULL (POISON)
+<pre>
+    <h1> ListFullDump </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 2
+	capacity  = 10
+	is_linear = 1 
+	head_ind  = 1
+	tail_ind  = 2
+	free      = 3
+
+	data = {
+		[01]: 9999.097090
+		[02]: -322.000000
+		[03]: NULL (POISON)
+		[04]: NULL (POISON)
+		[05]: NULL (POISON)
+		[06]: NULL (POISON)
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
 	}
 
 	next = {
-		[01]: 11
-		[02]: 3
+		[01]: 2
+		[02]: 0
 		[03]: 4
 		[04]: 5
 		[05]: 6
@@ -73,80 +89,77 @@ ON)
 		[07]: 8
 		[08]: 9
 		[09]: 10
-		[10]: 1
-		[11]: 12
-		[12]: 0
-		[13]: 14
-		[14]: 15
-		[15]: 16
-		[16]: 17
-		[17]: 18
-		[18]: 19
-		[19]: 20
-		[20]: 21
-		[21]: 22
-		[22]: 23
-		[23]: 24
-		[24]: 25
-		[25]: 26
-		[26]: 27
-		[27]: 28
-		[28]: 29
-		[29]: 30
-		[30]: 31
-		[31]: 32
-		[32]: 33
-		[33]: 34
-		[34]: 35
-		[35]: 36
-		[36]: 37
-		[37]: 38
-		[38]: 39
-		[39]: 40
-		[40]: 0
+		[10]: 0
 	}
 
 	prev = {
-		[01]: 10
-		[02]: 0
-		[03]: 2
+		[01]: 0
+		[02]: 1
+		[03]: BAAAAD (POISON)
+		[04]: BAAAAD (POISON)
+		[05]: BAAAAD (POISON)
+		[06]: BAAAAD (POISON)
+		[07]: BAAAAD (POISON)
+		[08]: BAAAAD (POISON)
+		[09]: BAAAAD (POISON)
+		[10]: BAAAAD (POISON)
+	}
+
+    
+
+        <img src = "./GraphDumpImages/GraphDump2.svg">
+    <hr>
+<!-- ------------------------------------------------------------ -->
+</pre>
+
+<pre>
+    <h1> ListFullDump </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 6
+	capacity  = 10
+	is_linear = 0 
+	head_ind  = 5
+	tail_ind  = 6
+	free      = 7
+
+	data = {
+		[01]: 9999.097090
+		[02]: -322.000000
+		[03]: 1.000000
+		[04]: NULL (POISON)
+		[05]: -1.000000
+		[06]: 3.000000
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
+	}
+
+	next = {
+		[01]: 2
+		[02]: 6
+		[03]: 1
 		[04]: 3
 		[05]: 4
-		[06]: 5
-		[07]: 6
-		[08]: 7
-		[09]: 8
-		[10]: 9
-		[11]: 1
-		[12]: 11
-		[13]: BAAAAD (POISON)
-		[14]: BAAAAD (POISON)
-		[15]: BAAAAD (POISON)
-		[16]: BAAAAD (POISON)
-		[17]: BAAAAD (POISON)
-		[18]: BAAAAD (POISON)
-		[19]: BAAAAD (POISON)
-		[20]: BAAAAD (POISON)
-		[21]: BAAAAD (POISON)
-		[22]: BAAAAD (POISON)
-		[23]: BAAAAD (POISON)
-		[24]: BAAAAD (POISON)
-		[25]: BAAAAD (POISON)
-		[26]: BAAAAD (POISON)
-		[27]: BAAAAD (POISON)
-		[28]: BAAAAD (POISON)
-		[29]: BAAAAD (POISON)
-		[30]: BAAAAD (POISON)
-		[31]: BAAAAD (POISON)
-		[32]: BAAAAD (POISON)
-		[33]: BAAAAD (POISON)
-		[34]: BAAAAD (POISON)
-		[35]: BAAAAD (POISON)
-		[36]: BAAAAD (POISON)
-		[37]: BAAAAD (POISON)
-		[38]: BAAAAD (POISON)
-		[39]: BAAAAD (POISON)
-		[40]: BAAAAD (POISON)
+		[06]: 0
+		[07]: 8
+		[08]: 9
+		[09]: 10
+		[10]: 0
+	}
+
+	prev = {
+		[01]: 3
+		[02]: 1
+		[03]: 4
+		[04]: 5
+		[05]: 0
+		[06]: 2
+		[07]: BAAAAD (POISON)
+		[08]: BAAAAD (POISON)
+		[09]: BAAAAD (POISON)
+		[10]: BAAAAD (POISON)
 	}
 
     
@@ -156,59 +169,59 @@ ON)
 <!-- ------------------------------------------------------------ -->
 </pre>
 
-pre>
+<pre>
     <h1> ListFullDump </h1>
   int ListTextDump(List*, FILE*):
 
-	size      = 5
+	size      = 10
 	capacity  = 10
 	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
+	head_ind  = 9
+	tail_ind  = 10
+	free      = 0
 
 	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
+		[01]: 9999.097090
+		[02]: -322.000000
+		[03]: 1.000000
+		[04]: NULL (POISON)
+		[05]: -1.000000
+		[06]: 3.000000
+		[07]: 1.000000
 		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
+		[09]: -1.000000
+		[10]: 3.000000
 	}
 
 	next = {
 		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
+		[02]: 6
+		[03]: 1
+		[04]: 3
+		[05]: 4
+		[06]: 10
+		[07]: 5
+		[08]: 7
+		[09]: 8
 		[10]: 0
 	}
 
 	prev = {
-		[01]: 5
+		[01]: 3
 		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
+		[03]: 4
+		[04]: 5
+		[05]: 7
+		[06]: 2
+		[07]: 8
+		[08]: 9
+		[09]: 0
+		[10]: 6
 	}
 
     
 
-        <img src = "./GraphDumpImages/GraphDump.svg">
+        <img src = "./GraphDumpImages/GraphDump4.svg">
     <hr>
 <!-- ------------------------------------------------------------ -->
 </pre>
@@ -217,19 +230,19 @@ pre>
     <h1> ListFullDump </h1>
   int ListTextDump(List*, FILE*):
 
-	size      = 5
+	size      = 0
 	capacity  = 10
 	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
+	head_ind  = 0
+	tail_ind  = 0
+	free      = 9
 
 	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
+		[01]: NULL (POISON)
+		[02]: NULL (POISON)
+		[03]: NULL (POISON)
+		[04]: NULL (POISON)
+		[05]: NULL (POISON)
 		[06]: NULL (POISON)
 		[07]: NULL (POISON)
 		[08]: NULL (POISON)
@@ -239,23 +252,23 @@ pre>
 
 	next = {
 		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
+		[02]: 6
+		[03]: 1
+		[04]: 3
+		[05]: 4
+		[06]: 10
+		[07]: 5
+		[08]: 7
+		[09]: 8
 		[10]: 0
 	}
 
 	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
+		[01]: BAAAAD (POISON)
+		[02]: BAAAAD (POISON)
+		[03]: BAAAAD (POISON)
+		[04]: BAAAAD (POISON)
+		[05]: BAAAAD (POISON)
 		[06]: BAAAAD (POISON)
 		[07]: BAAAAD (POISON)
 		[08]: BAAAAD (POISON)
@@ -265,406 +278,7 @@ pre>
 
     
 
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
-    <hr>
-<!-- ------------------------------------------------------------ -->
-</pre>
-
-<pre>
-    <h1> ListFullDump </h1>
-  int ListTextDump(List*, FILE*):
-
-	size      = 5
-	capacity  = 10
-	is_linear = 0 
-	head_ind  = 5
-	tail_ind  = 4
-	free      = 6
-
-	data = {
-		[01]: one
-		[02]: two
-		[03]: three
-		[04]: four
-		[05]: zero
-		[06]: NULL (POISON)
-		[07]: NULL (POISON)
-		[08]: NULL (POISON)
-		[09]: NULL (POISON)
-		[10]: NULL (POISON)
-	}
-
-	next = {
-		[01]: 2
-		[02]: 3
-		[03]: 4
-		[04]: 0
-		[05]: 1
-		[06]: 7
-		[07]: 8
-		[08]: 9
-		[09]: 10
-		[10]: 0
-	}
-
-	prev = {
-		[01]: 5
-		[02]: 1
-		[03]: 2
-		[04]: 3
-		[05]: 0
-		[06]: BAAAAD (POISON)
-		[07]: BAAAAD (POISON)
-		[08]: BAAAAD (POISON)
-		[09]: BAAAAD (POISON)
-		[10]: BAAAAD (POISON)
-	}
-
-    
-
-        <img src = "./GraphDumpImages/GraphDump.svg">
+        <img src = "./GraphDumpImages/GraphDump5.svg">
     <hr>
 <!-- ------------------------------------------------------------ -->
 </pre>

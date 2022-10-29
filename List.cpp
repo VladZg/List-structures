@@ -1,10 +1,10 @@
-#include "Config.h"
+#include "./Config.h"
 #include <stdlib.h>
 #include <cstdio>
 #include "Constants.h"
-#include "DefineColourConsts.h"
-#include "Assert.h"
-#include "List.h"
+#include "./DefineColourConsts.h"
+#include "./Assert.h"
+#include "./List.h"
 
 //DSL
 #define DATA      list->data
@@ -17,7 +17,7 @@
 #define IS_LINEAR list->is_linear
 
 #ifdef NDEBUG
-#undef  ASSERT( condition )
+#undef  ASSERT
 #define ASSERT( condition ) {}
 #endif
 
@@ -261,7 +261,7 @@ int ListTextDump(List* list, FILE* file)
 
     if (file != stdout)
     {
-        #include "UndefColourConsts.h"
+        #include "./UndefColourConsts.h"
     }
 
     fprintf(file, KYEL "  %s:\n\n" KNRM, __PRETTY_FUNCTION__);
@@ -316,21 +316,23 @@ int ListTextDump(List* list, FILE* file)
 
     if (file != stdout)
     {
-        #include "DefineColourConsts.h"
+        #include "./DefineColourConsts.h"
     }
 
     return 1;
 }
 
-int ListGraphDump(List* list, size_t dump_num)
+int ListGraphDump(List* list, size_t* DumpAmnt)
 {
     ListVerifyStatus_
 
-    if (IsListEmpty(list) == LIST_IS_EMPTY_STATUS)
-    {
-        PrintError("List is empty");
-        return LIST_IS_EMPTY_STATUS;
-    }
+    (*DumpAmnt)++;
+
+    // if (IsListEmpty(list) == LIST_IS_EMPTY_STATUS)
+    // {
+    //     PrintError("List is empty");
+    //     return LIST_IS_EMPTY_STATUS;
+    // }
 
     FILE* file_dot = fopen("./TextForGraphDump", "w");
 
@@ -383,12 +385,18 @@ int ListGraphDump(List* list, size_t dump_num)
     fclose(file_dot);
 
     char* dump_comand = (char*) calloc(100, sizeof(char));
-    sprintf(dump_comand, "dot TextForGraphDump -Tsvg -o ./GraphDumpImages/GraphDump%ld.svg", dump_num);
-
+    sprintf(dump_comand, "dot ./TextForGraphDump -Tsvg -o ./GraphDumpImages/GraphDump%ld.svg", *DumpAmnt);
     system(dump_comand);
     free(dump_comand);
 
-    FILE* file_html = fopen("./FullDump.html", "r+");
+    FILE* file_html = NULL;
+
+    if (*DumpAmnt != 1)
+        file_html = fopen("./FullDump.html", "a");
+
+    else
+        file_html = fopen("./FullDump.html", "w+");
+
     fseek(file_html, 0, SEEK_SET);
 
     fprintf(file_html, "<pre>\n");
@@ -401,14 +409,11 @@ int ListGraphDump(List* list, size_t dump_num)
     fprintf(file_html,  "    \n\n"
                         "        <img src = \"./GraphDumpImages/GraphDump%ld.svg\">\n"
                         "    <hr>\n"
-                        "<!-- ------------------------------------------------------------ -->\n", dump_num);
+                        "<!-- ------------------------------------------------------------ -->\n", *DumpAmnt);
 
     fprintf(file_html, "</pre>\n\n");
 
     fclose(file_html);
-
-    // system("eog GraphDump.svg");
-    system("xdg-open \"./FullDump.html\"");
 
     return LIST_IS_OK_STATUS;
 }

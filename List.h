@@ -1,10 +1,10 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "Config.h"
+#include "./Config.h"
 #include <cstdio>
 #include <stdbool.h>
-#include "Constants.h"
+#include "./Constants.h"
 
 struct ListElem
 {
@@ -35,7 +35,7 @@ int ListDtor (List* list);
 int ListVerify     (List* list);
 int ListFullVerify (List* list);
 int ListTextDump   (List* list, FILE* file = stdout);
-int ListGraphDump  (List* list, size_t dump_num);
+int ListGraphDump  (List* list, size_t* DumpAmnt);
 
 size_t ListFindElemIndexByLogIndex (List* list, size_t log_index );
 

@@ -1,49 +1,67 @@
-#include "Config.h"
+#include "./Config.h"
 #include <stdlib.h>
-#include "Constants.h"
-#include "List.h"
+#include "./Constants.h"
+#include "./List.h"
+
+size_t DumpAmnt = 0;
 
 #define NDEBUG
 
 #ifndef NDEBUG
 
-#define PushBack( value )        \
-    ListPushBack(&list, value);  \
-    ListTextDump(&list);         \
+#define PushBack( value )                       \
+    ListPushBack(&list, value);                 \
+    ListGraphDump(&list, &DumpAmnt);
 
-#define PushFront( value )       \
-    ListPushFront(&list, value); \
-    ListTextDump(&list);
-
-#define Dump                     \
-    ListTextDump(&list);         \
-    ListPrint(&list);            \
-    ListGraphDump(&list);
+#define PushFront( value )                      \
+    ListPushFront(&list, value);                \
+    ListGraphDump(&list, &DumpAmnt);
 
 #define InsertAfter( phys_index, value )        \
     ListInsertAfter(&list, phys_index, value);  \
-    ListTextDump(&list);
+    ListGraphDump(&list, &DumpAmnt);
+
+#define InsertBefore( phys_index, value )       \
+    ListInsertBefore(&list, phys_index, value); \
+    ListGraphDump(&list, &DumpAmnt);
+
+#define Dump                                    \
+    ListPrint(&list);                           \
+    ListGraphDump(&list, &DumpAmnt);
 
 #else
 
-#define PushBack( value )        \
+#define PushBack( value )                       \
     ListPushBack(&list, value);
 
-#define PushFront( value )       \
+#define PushFront( value )                      \
     ListPushFront(&list, value);
 
-#define InsertAfter( phys_index, value )    \
+#define InsertAfter( phys_index, value )        \
     ListInsertAfter(&list, phys_index, value);
 
-#define Erase( phys_index )    \
+#define InsertBefore( phys_index, value )       \
+    ListInsertBefore(&list, phys_index, value);
+
+#define Erase( phys_index )                     \
     ListErase(&list, phys_index);
 
 #define Dump {}
 
 #endif
 
+void OpenGraphDumps()
+{
+    #ifndef NOPEN_DUMPS
+    system("xdg-open \"./FullDump.html\"");
+    #endif
+}
+
+const int HaveGraphDumpsOpened = atexit(&OpenGraphDumps);
+
 int main()
 {
+
     List list = {};
     ListCtor(&list);
 
@@ -182,43 +200,57 @@ int main()
     // ListTextDump(&list);
 
     // ListTextDump(&list);
-    PushFront("0");
-    PushBack("-1");
-    PushBack("-2");
-    PushBack("-3");
-    //  ListGraphDump(&list, 1);
-    PushFront("-4");
-    PushBack("-5");
-    PushBack("-6");
-    PushFront("-7");
-    PushBack("-8");
-    PushFront("-9");
-    ListPopFront(&list);
-    PushBack("-10");
-    // ListTextDump(&list);
-    PushBack("-11");
-    ListClear(&list);
+    // PushFront("0");
+    // PushBack("-1");
+    // PushBack("-2");
+    // PushBack("-3");
+    // //  ListGraphDump(&list, 1);
+    // PushFront("-4");
+    // PushBack("-5");
+    // PushBack("-6");
+    // PushFront("-7");
+    // PushBack("-8");
+    // PushFront("-9");
+    // ListPopFront(&list);
+    // PushBack("-10");
+    // // ListTextDump(&list);
+    // PushBack("-11");
+    // ListClear(&list);
+    // PushBack(89);
     // ListFullVerify(&list);
     // ListTextDump(&list);
-
+    ListGraphDump(&list, &DumpAmnt);
+    PushFront(9999.09709);
+    PushBack(-322);
     // ListTextDump(&list);
     // PushBack("-11");
     // ListPopFront(&list);
     // ListErase(&list, 9);
     // ListPopFront(&list);
-    //  ListGraphDump(&list, 2);
+    ListGraphDump(&list, &DumpAmnt);
     // ListTextDump(&list);
     // ListTextDump(&list);
     // ListClear(&list);
     // ListLinearize(&list);
-    ListTextDump(&list);
+    // ListTextDump(&list);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListErase(&list, 4);
+    PushFront(1);
+    PushFront(0);
+    PushFront(-1);
+    PushBack(3);
+    ListGraphDump(&list, &DumpAmnt);
+    PushFront(1);
+    PushFront(0);
+    PushFront(-1);
+    PushBack(3);
+    ListGraphDump(&list, &DumpAmnt);
     // ListPopFront(&list);
     // ListTextDump(&list);
-    // ListClear(&list);
+    ListClear(&list);
+    ListGraphDump(&list, &DumpAmnt);
     // ListTextDump(&list);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListTextDump(&list);
