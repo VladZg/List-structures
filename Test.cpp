@@ -1,7 +1,7 @@
-#include "./Config.h"
+#include "./Include/Config.h"
 #include <stdlib.h>
-#include "./Constants.h"
-#include "./List.h"
+#include "./Include/Constants.h"
+#include "./Include/List.h"
 
 size_t DumpAmnt = 0;
 
@@ -57,13 +57,16 @@ void OpenGraphDumps()
     #endif
 }
 
+#define GraphDump(cmd)                     \
+    cmd;                                   \
+    ListGraphDump(&list, &DumpAmnt, #cmd);
+
 const int HaveGraphDumpsOpened = atexit(&OpenGraphDumps);
 
 int main()
 {
-
     List list = {};
-    ListCtor(&list);
+    GraphDump(ListCtor(&list))
 
     // ListTextDump(&list);
     // ListGraphDump(&list);
@@ -124,7 +127,7 @@ int main()
     // PushFront("zero");
     // ListPopBack(&list);
     // ListTextDump(&list);
-    // InsertAfter(2, "two point five");
+    //    list.InsertAfter(2, "two point five");
     // InsertAfter(4, "zero point five");
     // PushFront("minus one");
     // ListTextDump(&list);
@@ -145,7 +148,7 @@ int main()
     // PushBack("new second");
     // PushBack("new last...");
     // PushFront("new zero");
-    // PushBack("just new1");
+    // PushBack("just new1");v
     // PushBack("just new2");
     // PushFront("just new3");
     // PushBack("just new4");
@@ -219,15 +222,13 @@ int main()
     // PushBack(89);
     // ListFullVerify(&list);
     // ListTextDump(&list);
-    ListGraphDump(&list, &DumpAmnt);
     PushFront(9999.09709);
-    PushBack(-322);
+    GraphDump(PushBack(-322))
     // ListTextDump(&list);
     // PushBack("-11");
     // ListPopFront(&list);
     // ListErase(&list, 9);
     // ListPopFront(&list);
-    ListGraphDump(&list, &DumpAmnt);
     // ListTextDump(&list);
     // ListTextDump(&list);
     // ListClear(&list);
@@ -240,17 +241,15 @@ int main()
     PushFront(1);
     PushFront(0);
     PushFront(-1);
-    PushBack(3);
-    ListGraphDump(&list, &DumpAmnt);
+    GraphDump(PushBack(3))
     PushFront(1);
     PushFront(0);
     PushFront(-1);
-    PushBack(3);
-    ListGraphDump(&list, &DumpAmnt);
+    GraphDump(PushBack(3))
     // ListPopFront(&list);
     // ListTextDump(&list);
-    ListClear(&list);
-    ListGraphDump(&list, &DumpAmnt);
+    GraphDump(ListClear(&list))
+    // ListGraphDump(&list, &DumpAmnt);
     // ListTextDump(&list);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListTextDump(&list);
