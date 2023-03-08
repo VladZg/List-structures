@@ -351,7 +351,7 @@ int ListGraphDump(List* list, size_t* DumpAmnt, const char* head_text)
     //     return LIST_IS_EMPTY_STATUS;
     // }
 
-    FILE* file_dot = fopen("./TextForGraphDump", "w");
+    FILE* file_dot = fopen("./ListDump/TextForGraphDump", "w");
 
     fprintf(file_dot, "digraph G{\n"
                       "    rankdir = LR;\n"
@@ -476,17 +476,17 @@ int ListGraphDump(List* list, size_t* DumpAmnt, const char* head_text)
     fclose(file_dot);
 
     char* dump_comand = (char*) calloc(100, sizeof(char));
-    sprintf(dump_comand, "dot ./TextForGraphDump -Tsvg -o ./GraphDumpImages/GraphDump%ld.svg", *DumpAmnt);
+    sprintf(dump_comand, "dot ./ListDump/TextForGraphDump -Tsvg -o ./ListDump/GraphDumpImages/GraphDump%ld.svg", *DumpAmnt);
     system(dump_comand);
     free(dump_comand);
 
     FILE* file_html = NULL;
 
     if (*DumpAmnt != 1)
-        file_html = fopen("./FullDump.html", "a");
+        file_html = fopen("./ListDump/FullDump.html", "a");
 
     else
-        file_html = fopen("./FullDump.html", "w+");
+        file_html = fopen("./ListDump/FullDump.html", "w+");
 
     fseek(file_html, 0, SEEK_SET);
 

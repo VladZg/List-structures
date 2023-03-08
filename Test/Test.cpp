@@ -1,7 +1,7 @@
-#include "./Include/Config.h"
+#include "../Include/Config.h"
 #include <stdlib.h>
-#include "./Include/Constants.h"
-#include "./Include/List.h"
+#include "../Include/Constants.h"
+#include "../Include/List.h"
 
 size_t DumpAmnt = 0;
 
@@ -53,7 +53,7 @@ size_t DumpAmnt = 0;
 void OpenGraphDumps()
 {
     #ifndef NOPEN_DUMPS
-    system("xdg-open \"./FullDump.html\"");
+    if (DumpAmnt) system("xdg-open \"./ListDump/FullDump.html\"");
     #endif
 }
 
@@ -66,10 +66,15 @@ const int HaveGraphDumpsOpened = atexit(&OpenGraphDumps);
 int main()
 {
     List list = {};
-    GraphDump(ListCtor(&list))
+    ListCtor(&list);
+
+    PushFront(14)
+    PushBack(-17)
+    PushFront(1.2)
+    InsertAfter(1, 12)
 
     // ListTextDump(&list);
-    // ListGraphDump(&list);
+    GraphDump(&list);
 
 //     size_t i1 = ListInsertAfter(&list, 0, 'A');
 //     Dump;
@@ -223,7 +228,7 @@ int main()
     // ListFullVerify(&list);
     // ListTextDump(&list);
     PushFront(9999.09709);
-    GraphDump(PushBack(-322))
+    // GraphDump(PushBack(-322))
     // ListTextDump(&list);
     // PushBack("-11");
     // ListPopFront(&list);
@@ -241,14 +246,14 @@ int main()
     PushFront(1);
     PushFront(0);
     PushFront(-1);
-    GraphDump(PushBack(3))
+    // GraphDump(PushBack(3))
     PushFront(1);
     PushFront(0);
     PushFront(-1);
-    GraphDump(PushBack(3))
+    // GraphDump(PushBack(3))
     // ListPopFront(&list);
     // ListTextDump(&list);
-    GraphDump(ListClear(&list))
+    // GraphDump(ListClear(&list))
     // ListGraphDump(&list, &DumpAmnt);
     // ListTextDump(&list);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
