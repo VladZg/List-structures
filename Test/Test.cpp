@@ -51,6 +51,8 @@ int main()
     InsertAfter(1, "last")
     PushFront("number one");
 
+    // printf("%ld!!\n", FindInList(&list, "ass"));
+
     // ListTextDump(&list);
     // GraphDump(&list);
 

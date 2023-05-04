@@ -61,4 +61,6 @@ int ListResize (List* list, int resize_mode);
 
 int ListPrint (List* list);
 
+size_t FindInList(List* list, Value_t value);
+
 #endif

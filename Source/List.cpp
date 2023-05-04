@@ -1,6 +1,7 @@
 #include "../Config.h"
 #include <stdlib.h>
 #include <cstdio>
+#include <cstring>
 #include "../Include/Constants.h"
 #include "../Include/DefineColourConsts.h"
 #include "../Include/Assert.h"
@@ -225,44 +226,17 @@ static int IsListEmpty(List* list)
     return LIST_IS_EMPTY_STATUS;
 }
 
-static void PrintListElemValue(FILE* file, int value)
+static void PrintListElemValue(FILE* file, int         value) {fprintf(file, "%d" , value);}
+static void PrintListElemValue(FILE* file, char        value) {fprintf(file, "%c" , value);}
+static void PrintListElemValue(FILE* file, double      value) {fprintf(file, "%lf", value);}
+static void PrintListElemValue(FILE* file, float       value) {fprintf(file, "%f" , value);}
+static void PrintListElemValue(FILE* file, const char* value) {if (value != nullptr) {fprintf(file, "%s", value); return;}
+                                                               fprintf(file, "None");      }
+
+static void _PrintListElemValue(FILE* file, Value_t value)
 {
-    ASSERT(file != nullptr);
-
-    fprintf(file, "%d", value);
-}
-
-static void PrintListElemValue(FILE* file, char value)
-{
-    ASSERT(file != nullptr);
-
-    fprintf(file, "%c", value);
-}
-
-static void PrintListElemValue(FILE* file, double value)
-{
-    ASSERT(file != nullptr);
-
-    fprintf(file, "%lf", value);
-}
-
-static void PrintListElemValue(FILE* file, const char* value)
-{
-    ASSERT(file != nullptr);
-    if (value != nullptr)
-    {
-        fprintf(file, "%s", value);
-        return;
-    }
-
-    fprintf(file, "None");
-}
-
-static void PrintListElemValue(FILE* file, float value)
-{
-    ASSERT(file != nullptr);
-
-    fprintf(file, "%f", value);
+    ASSERT(file != nullptr)
+    PrintListElemValue(file, value);
 }
 
 int ListTextDump(List* list, FILE* file)
@@ -292,7 +266,7 @@ int ListTextDump(List* list, FILE* file)
         fprintf(file, "\t\t[" KCYN "%02ld" KNRM "]: ", index);
 
         if (DATA[index].value != (Value_t) LIST_ELEM_POISONED_VALUE)
-            PrintListElemValue(file, DATA[index].value);
+            _PrintListElemValue(file, DATA[index].value);
 
         else fprintf(file, "NULL (" KMAG "POISON" KNRM ")");
 
@@ -379,7 +353,7 @@ int ListGraphDump(List* list, const char* head_text)
     for (size_t phys_index = 1; phys_index <= CAPACITY; phys_index++)
     {
         fprintf(file_dot, "    node%ld [shape = record, style = filled, fillcolor = %s, label = \" value:\\n", phys_index, PickColour(list, phys_index));
-        PrintListElemValue(file_dot, DATA[phys_index].value);
+        _PrintListElemValue(file_dot, DATA[phys_index].value);
         fprintf(file_dot, " | <prev> prev:\\n%ld | <next> next:\\n%ld \"];\n", (DATA[phys_index].prev == LIST_ELEM_FREE ? -1 : DATA[phys_index].prev), DATA[phys_index].next);
         fprintf(file_dot, "    index%ld [ label = \" %ld \" ];\n", phys_index, phys_index);
         fprintf(file_dot, "    { rank = same; index%ld; node%ld };\n", phys_index, phys_index);
@@ -890,18 +864,41 @@ int ListPrint(List* list)
 
     size_t index = ListHead(list);
     fprintf(stdout, "List: \"");
-    PrintListElemValue(stdout, DATA[index].value);
+    _PrintListElemValue(stdout, DATA[index].value);
     fprintf(stdout, "\"");
 
     for (size_t i = 1; i < SIZE; i++)
     {
         index = ListNext(list, index);
         fprintf(stdout, ", \"");
-        PrintListElemValue(stdout, DATA[index].value);
+        _PrintListElemValue(stdout, DATA[index].value);
         fprintf(stdout, "\"");
     }
 
     fprintf(stdout, "\n");
 
     return LIST_IS_OK_STATUS;
+}
+
+static inline int CmpListValue(const char* value1, const char* value2) {ASSERT(value1); ASSERT(value2); return strcmp(value1, value2);}
+static inline int CmpListValue(int         value1, int         value2) {                                return value1 == value2      ;}
+static inline int CmpListValue(float       value1, float       value2) {                                return value1 == value2      ;}
+static inline int CmpListValue(char        value1, char        value2) {                                return value1 == value2      ;}
+static inline int CmpListValue(double      value1, double      value2) {                                return value1 == value2      ;}
+
+size_t FindInList(List* list, Value_t value)
+{
+    ListVerifyStatus_
+
+    size_t phys_index = HEAD_IND;
+
+    for (size_t i = 0; i < SIZE; i++)
+    {
+        if (!CmpListValue(value, list->data[phys_index].value))
+            return phys_index;
+
+        phys_index = ListNext(list, phys_index);
+    }
+
+    return 0;
 }
