@@ -1,7 +1,7 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "./Config.h"
+#include "../Config.h"
 #include <cstdio>
 #include <stdbool.h>
 #include "./Constants.h"
@@ -27,8 +27,6 @@ struct List
     bool    is_linear;
 
     int     status;
-
-    // size_t InsertAfter(size_t phys_index, Value_t value);
 };
 
 int ListCtor (List* list);
@@ -37,7 +35,7 @@ int ListDtor (List* list);
 int ListVerify     (List* list);
 int ListFullVerify (List* list);
 int ListTextDump   (List* list, FILE* file = stdout);
-int ListGraphDump  (List* list, size_t* DumpAmnt, const char* head_text);
+int ListGraphDump  (List* list, const char* head_text);
 
 size_t ListFindElemIndexByLogIndex (List* list, size_t log_index );
 

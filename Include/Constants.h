@@ -1,5 +1,5 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef LIST_CONSTANTS_H
+#define LIST_CONSTANTS_H
 
 enum ListStatuses
 {

@@ -1,80 +1,58 @@
-#include "../Include/Config.h"
+#include "../Config.h"
 #include <stdlib.h>
 #include "../Include/Constants.h"
 #include "../Include/List.h"
+#include "../Libs/Logging/Log.h"
 
-size_t DumpAmnt = 0;
-
-#define NDEBUG
+extern size_t DumpAmnt;
 
 #ifndef NDEBUG
-
-#define PushBack( value )                       \
-    ListPushBack(&list, value);                 \
-    ListGraphDump(&list, &DumpAmnt);
-
-#define PushFront( value )                      \
-    ListPushFront(&list, value);                \
-    ListGraphDump(&list, &DumpAmnt);
-
-#define InsertAfter( phys_index, value )        \
-    ListInsertAfter(&list, phys_index, value);  \
-    ListGraphDump(&list, &DumpAmnt);
-
-#define InsertBefore( phys_index, value )       \
-    ListInsertBefore(&list, phys_index, value); \
-    ListGraphDump(&list, &DumpAmnt);
-
-#define Dump                                    \
-    ListPrint(&list);                           \
-    ListGraphDump(&list, &DumpAmnt);
-
+    #define GraphDump(cmd)                     \
+        cmd;                                   \
+        ListGraphDump(&list, #cmd);
 #else
-
-#define PushBack( value )                       \
-    ListPushBack(&list, value);
-
-#define PushFront( value )                      \
-    ListPushFront(&list, value);
-
-#define InsertAfter( phys_index, value )        \
-    ListInsertAfter(&list, phys_index, value);
-
-#define InsertBefore( phys_index, value )       \
-    ListInsertBefore(&list, phys_index, value);
-
-#define Erase( phys_index )                     \
-    ListErase(&list, phys_index);
-
-#define Dump {}
-
+    #define GraphDump(cmd)                     \
+        cmd;
 #endif
 
-void OpenGraphDumps()
+#define PushBack( value )                                   \
+    GraphDump(ListPushBack(&list, value))
+
+#define PushFront( value )                                  \
+    GraphDump(ListPushFront(&list, value))
+
+#define InsertAfter( phys_index, value )                    \
+    GraphDump(ListInsertAfter(&list, phys_index, value))
+
+#define InsertBefore( phys_index, value )                   \
+    GraphDump(ListInsertBefore(&list, phys_index, value))
+
+#define Dump                                                \
+    GraphDump(ListPrint(&list))
+
+static void OpenGraphDumps()
 {
     #ifndef NOPEN_DUMPS
-    if (DumpAmnt) system("xdg-open \"./ListDump/FullDump.html\"");
+        if (DumpAmnt)
+            int sys_ret = system("xdg-open \"./ListDump/FullDump.html\"");
     #endif
 }
 
-#define GraphDump(cmd)                     \
-    cmd;                                   \
-    ListGraphDump(&list, &DumpAmnt, #cmd);
-
-const int HaveGraphDumpsOpened = atexit(&OpenGraphDumps);
+static const int HaveGraphDumpsOpened = atexit(&OpenGraphDumps);
 
 int main()
 {
     List list = {};
     ListCtor(&list);
 
-    PushFront(14)
-    PushBack(-17)
-    PushFront(1.2)
-    InsertAfter(1, 12)
+    PushFront("aboba")
+    PushBack("mem")
+    PushFront("ahahaha")
+    InsertAfter(1, "last")
+    PushFront("number one");
 
     // ListTextDump(&list);
-    GraphDump(&list);
+    // GraphDump(&list);
 
 //     size_t i1 = ListInsertAfter(&list, 0, 'A');
 //     Dump;
@@ -227,7 +205,7 @@ int main()
     // PushBack(89);
     // ListFullVerify(&list);
     // ListTextDump(&list);
-    PushFront(9999.09709);
+    // PushFront(9999.09709);
     // GraphDump(PushBack(-322))
     // ListTextDump(&list);
     // PushBack("-11");
@@ -243,13 +221,13 @@ int main()
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListResize(&list, INCREASE_LIST_CAPACITY_MODE);
     // ListErase(&list, 4);
-    PushFront(1);
-    PushFront(0);
-    PushFront(-1);
+    // PushFront(1);
+    // PushFront(0);
+    // PushFront(-1);
     // GraphDump(PushBack(3))
-    PushFront(1);
-    PushFront(0);
-    PushFront(-1);
+    // PushFront(1);
+    // PushFront(0);
+    // PushFront(-1);
     // GraphDump(PushBack(3))
     // ListPopFront(&list);
     // ListTextDump(&list);
@@ -281,11 +259,9 @@ int main()
     // ListClear(&list);
 
     // ListTextDump(&list);
-    // ListGraphDump(&list, 3);
     ListPrint(&list);
 
     ListDtor(&list);
-    // ListDtor(&list);
 
     return 1;
 }

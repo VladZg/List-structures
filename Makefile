@@ -1,27 +1,31 @@
 TARGET = test
 
 CC = g++
-CFLAGS = -g
+OPT_FLAGS   = -O3 -g
+OTHER_FLAGS = -fsanitize=leak
+CFLAGS = $(OPT_FLAGS)
 
 TEST_DIR = ./Test/
 SRC_DIR = ./Source/
 ROOT_DIR = ./
 
-SRC = 	$(TEST_DIR)Test.cpp		\
+SRC = 	$(TEST_DIR)Test.cpp 	\
 		$(SRC_DIR)List.cpp
 
-all: create_dirs $(TARGET)
+LIBS =  ./Libs/Logging/Log.cpp
 
-create_dirs :
-	[ ! -d ./ListDump ] && mkdir -p ./ListDump ./ListDump/GraphDumpImages
+all: compile run
 
-$(TARGET) :
-	$(CC) $(CFLAGS) $(SRC) -o $(ROOT_DIR)$(TARGET)
+compile:
+	$(CC) $(CFLAGS) $(SRC) $(LIBS) -o $(ROOT_DIR)$(TARGET)
 
-clean : clean_files clean_dirs
+run:
+	./$(TARGET)
 
-clean_files :
+clean: clean_files clean_dumps
+
+clean_files:
 	rm -f *.o $(ROOT_DIR)$(TARGET)
 
-clean_dirs :
-	[ -d ./ListDump ] && rm -R ./ListDump
+clean_dumps:
+	rm -f ./ListDump/GraphDumpImages/*
