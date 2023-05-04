@@ -84,7 +84,7 @@
 
 Пример графической распечатки списка при помощи описанной функции:
 
-![GraphDump](Pictures/GraphDump1.svg)
+![GraphDump](Pictures/GraphDump2.svg)
 
 ## Сборка и запуск
 
