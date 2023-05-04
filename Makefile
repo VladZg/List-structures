@@ -14,7 +14,10 @@ SRC = 	$(TEST_DIR)Test.cpp 	\
 
 LIBS =  ./Libs/Logging/Log.cpp
 
-all: compile run
+all: create_dirs compile run
+
+create_dirs :
+	mkdir -p ./ListDump ./ListDump/GraphDumpImages
 
 compile:
 	$(CC) $(CFLAGS) $(SRC) $(LIBS) -o $(ROOT_DIR)$(TARGET)
@@ -25,7 +28,7 @@ run:
 clean: clean_files clean_dumps
 
 clean_files:
-	rm -f *.o $(ROOT_DIR)$(TARGET)
+	@rm -f *.o $(ROOT_DIR)$(TARGET)
 
 clean_dumps:
-	rm -f ./ListDump/GraphDumpImages/*
+	@rm -f ./ListDump/GraphDumpImages/*

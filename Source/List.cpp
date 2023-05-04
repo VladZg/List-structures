@@ -84,7 +84,7 @@ int ListCtor(List* list)
         {
             (Value_t) LIST_ELEM_POISONED_VALUE,
             DATA[index].next = index + 1,
-            DATA[index].prev = LIST_ELEM_FREE,
+            DATA[index].prev = index - 1,
         };
     }
 
@@ -249,8 +249,13 @@ static void PrintListElemValue(FILE* file, double value)
 static void PrintListElemValue(FILE* file, const char* value)
 {
     ASSERT(file != nullptr);
+    if (value != nullptr)
+    {
+        fprintf(file, "%s", value);
+        return;
+    }
 
-    fprintf(file, "%s", value);
+    fprintf(file, "None");
 }
 
 static void PrintListElemValue(FILE* file, float value)
@@ -331,18 +336,18 @@ int ListTextDump(List* list, FILE* file)
 
 static const char* PickColour(List* list, size_t phys_index)
 {
-    ListVerify_
+    PhysIndexVerify_
+
+    if (DATA[phys_index].value == LIST_ELEM_POISONED_VALUE)
+        return "yellow";
+
+    if (phys_index == HEAD_IND)
+        return "lightgreen";
 
     if (phys_index == TAIL_IND)
         return "lightblue";
 
-    if (phys_index = HEAD_IND)
-        return "lightgreen";
-
-    if (phys_index == FREE)
-        return "yellow";
-
-    return "lightgrey";
+    return "pink";
 }
 
 int ListGraphDump(List* list, const char* head_text)
@@ -371,20 +376,16 @@ int ListGraphDump(List* list, const char* head_text)
 
     // Заполнение узлов
 
-    size_t phys_index = HEAD_IND;
-
-    for (size_t i = 0; i < SIZE; i++)
+    for (size_t phys_index = 1; phys_index <= CAPACITY; phys_index++)
     {
         fprintf(file_dot, "    node%ld [shape = record, style = filled, fillcolor = %s, label = \" value:\\n", phys_index, PickColour(list, phys_index));
         PrintListElemValue(file_dot, DATA[phys_index].value);
         fprintf(file_dot, " | <prev> prev:\\n%ld | <next> next:\\n%ld \"];\n", (DATA[phys_index].prev == LIST_ELEM_FREE ? -1 : DATA[phys_index].prev), DATA[phys_index].next);
         fprintf(file_dot, "    index%ld [ label = \" %ld \" ];\n", phys_index, phys_index);
         fprintf(file_dot, "    { rank = same; index%ld; node%ld };\n", phys_index, phys_index);
-
-        phys_index = ListNext(list, phys_index);
     }
 
-    for (phys_index = 0; phys_index < CAPACITY; phys_index++)
+    for (size_t phys_index = 0; phys_index < CAPACITY; phys_index++)
     {
         fprintf(file_dot, "    index%ld -> index%ld [color = white];\n", phys_index, phys_index + 1);
     }
@@ -395,22 +396,15 @@ int ListGraphDump(List* list, const char* head_text)
 
     // Связывание
 
-    phys_index = HEAD_IND;
-
-    for (size_t i = 0; i < SIZE; i++)
+    for (size_t phys_index = 1; phys_index <= CAPACITY; phys_index++)
     {
         if (DATA[phys_index].next != 0)
-            fprintf(file_dot, "    node%ld: <next> -> node%ld: <next>;\n", phys_index, DATA[phys_index].next);
-
-        if ((DATA[phys_index].prev != LIST_ELEM_FREE) && (DATA[phys_index].prev != 0))
-            fprintf(file_dot, "    node%ld: <prev> -> node%ld: <prev> [arrowtail = back];\n", DATA[phys_index].prev, phys_index);
-
-        phys_index = ListNext(list, phys_index);
+            fprintf(file_dot, "    node%ld: <next> -> node%ld: <next> [weight = %ld];\n", phys_index, DATA[phys_index].next, phys_index);
     }
 
-    fprintf(file_dot, "    index%ld -> head;\n", HEAD_IND);
-    fprintf(file_dot, "    index%ld -> tail;\n", TAIL_IND);
-    fprintf(file_dot, "    index%ld -> free;\n", FREE);
+    fprintf(file_dot, "    index%ld -> head [weight = %ld];\n", HEAD_IND, HEAD_IND);
+    fprintf(file_dot, "    index%ld -> tail [weight = %ld];\n", TAIL_IND, TAIL_IND);
+    fprintf(file_dot, "    index%ld -> free [weight = %ld];\n", FREE    , FREE    );
 
     fprintf(file_dot, "    { rank = same; node%ld; head };\n", HEAD_IND);
     fprintf(file_dot, "    { rank = same; node%ld; tail };\n", TAIL_IND);

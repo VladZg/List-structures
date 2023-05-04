@@ -1,0 +1,280 @@
+<pre>
+    <h1> ListFullDump: ListPushFront(&list, "aboba") </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 1
+	capacity  = 10
+	is_linear = 1 
+	head_ind  = 1
+	tail_ind  = 1
+	free      = 2
+
+	data = {
+		[01]: aboba
+		[02]: NULL (POISON)
+		[03]: NULL (POISON)
+		[04]: NULL (POISON)
+		[05]: NULL (POISON)
+		[06]: NULL (POISON)
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
+	}
+
+	next = {
+		[01]: 0
+		[02]: 3
+		[03]: 4
+		[04]: 5
+		[05]: 6
+		[06]: 7
+		[07]: 8
+		[08]: 9
+		[09]: 10
+		[10]: 0
+	}
+
+	prev = {
+		[01]: 0
+		[02]: 1
+		[03]: 2
+		[04]: 3
+		[05]: 4
+		[06]: 5
+		[07]: 6
+		[08]: 7
+		[09]: 8
+		[10]: 9
+	}
+
+    
+        <img src = "./GraphDumpImages/GraphDump1.svg">
+    <hr>
+<!-- ------------------------------------------------------------ -->
+</pre>
+
+<pre>
+    <h1> ListFullDump: ListPushBack(&list, "mem") </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 2
+	capacity  = 10
+	is_linear = 1 
+	head_ind  = 1
+	tail_ind  = 2
+	free      = 3
+
+	data = {
+		[01]: aboba
+		[02]: mem
+		[03]: NULL (POISON)
+		[04]: NULL (POISON)
+		[05]: NULL (POISON)
+		[06]: NULL (POISON)
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
+	}
+
+	next = {
+		[01]: 2
+		[02]: 0
+		[03]: 4
+		[04]: 5
+		[05]: 6
+		[06]: 7
+		[07]: 8
+		[08]: 9
+		[09]: 10
+		[10]: 0
+	}
+
+	prev = {
+		[01]: 0
+		[02]: 1
+		[03]: 2
+		[04]: 3
+		[05]: 4
+		[06]: 5
+		[07]: 6
+		[08]: 7
+		[09]: 8
+		[10]: 9
+	}
+
+    
+        <img src = "./GraphDumpImages/GraphDump2.svg">
+    <hr>
+<!-- ------------------------------------------------------------ -->
+</pre>
+
+<pre>
+    <h1> ListFullDump: ListPushFront(&list, "ahahaha") </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 3
+	capacity  = 10
+	is_linear = 0 
+	head_ind  = 3
+	tail_ind  = 2
+	free      = 4
+
+	data = {
+		[01]: aboba
+		[02]: mem
+		[03]: ahahaha
+		[04]: NULL (POISON)
+		[05]: NULL (POISON)
+		[06]: NULL (POISON)
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
+	}
+
+	next = {
+		[01]: 2
+		[02]: 0
+		[03]: 1
+		[04]: 5
+		[05]: 6
+		[06]: 7
+		[07]: 8
+		[08]: 9
+		[09]: 10
+		[10]: 0
+	}
+
+	prev = {
+		[01]: 3
+		[02]: 1
+		[03]: 0
+		[04]: 3
+		[05]: 4
+		[06]: 5
+		[07]: 6
+		[08]: 7
+		[09]: 8
+		[10]: 9
+	}
+
+    
+        <img src = "./GraphDumpImages/GraphDump3.svg">
+    <hr>
+<!-- ------------------------------------------------------------ -->
+</pre>
+
+<pre>
+    <h1> ListFullDump: ListInsertAfter(&list, 1, "last") </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 4
+	capacity  = 10
+	is_linear = 0 
+	head_ind  = 3
+	tail_ind  = 2
+	free      = 5
+
+	data = {
+		[01]: aboba
+		[02]: mem
+		[03]: ahahaha
+		[04]: last
+		[05]: NULL (POISON)
+		[06]: NULL (POISON)
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
+	}
+
+	next = {
+		[01]: 4
+		[02]: 0
+		[03]: 1
+		[04]: 2
+		[05]: 6
+		[06]: 7
+		[07]: 8
+		[08]: 9
+		[09]: 10
+		[10]: 0
+	}
+
+	prev = {
+		[01]: 3
+		[02]: 4
+		[03]: 0
+		[04]: 1
+		[05]: 4
+		[06]: 5
+		[07]: 6
+		[08]: 7
+		[09]: 8
+		[10]: 9
+	}
+
+    
+        <img src = "./GraphDumpImages/GraphDump4.svg">
+    <hr>
+<!-- ------------------------------------------------------------ -->
+</pre>
+
+<pre>
+    <h1> ListFullDump: ListPushFront(&list, "number one") </h1>
+  int ListTextDump(List*, FILE*):
+
+	size      = 5
+	capacity  = 10
+	is_linear = 0 
+	head_ind  = 5
+	tail_ind  = 2
+	free      = 6
+
+	data = {
+		[01]: aboba
+		[02]: mem
+		[03]: ahahaha
+		[04]: last
+		[05]: number one
+		[06]: NULL (POISON)
+		[07]: NULL (POISON)
+		[08]: NULL (POISON)
+		[09]: NULL (POISON)
+		[10]: NULL (POISON)
+	}
+
+	next = {
+		[01]: 4
+		[02]: 0
+		[03]: 1
+		[04]: 2
+		[05]: 3
+		[06]: 7
+		[07]: 8
+		[08]: 9
+		[09]: 10
+		[10]: 0
+	}
+
+	prev = {
+		[01]: 3
+		[02]: 4
+		[03]: 5
+		[04]: 1
+		[05]: 0
+		[06]: 5
+		[07]: 6
+		[08]: 7
+		[09]: 8
+		[10]: 9
+	}
+
+    
+        <img src = "./GraphDumpImages/GraphDump5.svg">
+    <hr>
+<!-- ------------------------------------------------------------ -->
+</pre>
+
